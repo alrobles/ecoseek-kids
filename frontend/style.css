@@ -408,6 +408,27 @@ body {
   margin-top: 0.4rem;
 }
 
+/* Data Panel (GBIF/References) */
+.data-panel {
+  margin-top: 0.4rem;
+  background: #F0FFF4;
+  border: 1px solid #C6F6D5;
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.8rem;
+  font-size: 0.8rem;
+}
+
+.data-panel-header {
+  font-weight: 700;
+  color: #276749;
+  margin-bottom: 0.2rem;
+}
+
+.data-panel-body {
+  color: #4A5568;
+  line-height: 1.4;
+}
+
 /* ===== SCROLLBAR ===== */
 .chat-messages::-webkit-scrollbar { width: 6px; }
 .chat-messages::-webkit-scrollbar-track { background: transparent; }
