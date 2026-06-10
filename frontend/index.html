@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ecoSeek Kids — Tu asistente de estudio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+</head>
+<body>
+  <!-- Landing / Welcome -->
+  <div id="welcome-screen" class="screen active">
+    <div class="welcome-container">
+      <div class="logo-big">🌿</div>
+      <h1>ecoSeek <span class="kids-tag">Kids</span></h1>
+      <p class="subtitle">Tu asistente de estudio inteligente</p>
+      <div class="welcome-cards">
+        <button class="topic-card" data-topic="matematicas">
+          <span class="topic-icon">🔢</span>
+          <span class="topic-label">Matemáticas</span>
+        </button>
+        <button class="topic-card" data-topic="ciencias">
+          <span class="topic-icon">🔬</span>
+          <span class="topic-label">Ciencias</span>
+        </button>
+        <button class="topic-card" data-topic="historia">
+          <span class="topic-icon">📚</span>
+          <span class="topic-label">Historia</span>
+        </button>
+        <button class="topic-card" data-topic="espanol">
+          <span class="topic-icon">✍️</span>
+          <span class="topic-label">Español</span>
+        </button>
+        <button class="topic-card" data-topic="ingles">
+          <span class="topic-icon">🌍</span>
+          <span class="topic-label">Inglés</span>
+        </button>
+        <button class="topic-card" data-topic="arte">
+          <span class="topic-icon">🎨</span>
+          <span class="topic-label">Arte</span>
+        </button>
+      </div>
+      <div class="start-chat">
+        <input type="text" id="start-input" placeholder="O escribe tu pregunta aquí..." autocomplete="off">
+        <button id="start-btn">Enviar ➜</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Screen -->
+  <div id="chat-screen" class="screen">
+    <header class="chat-header">
+      <button id="back-btn" class="icon-btn" title="Volver">←</button>
+      <div class="header-center">
+        <span class="header-logo">🌿</span>
+        <span class="header-title">ecoSeek Kids</span>
+      </div>
+      <button id="new-chat-btn" class="icon-btn" title="Nueva pregunta">＋</button>
+    </header>
+
+    <div id="chat-messages" class="chat-messages">
+      <!-- Messages injected here -->
+    </div>
+
+    <div class="chat-input-area">
+      <div class="input-wrapper">
+        <textarea id="chat-input" placeholder="Escribe tu pregunta..." rows="1" maxlength="2000"></textarea>
+        <button id="send-btn" title="Enviar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+        </button>
+      </div>
+      <p class="input-hint">ecoSeek Kids te ayuda a aprender. ¡Siempre verifica tus tareas!</p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
