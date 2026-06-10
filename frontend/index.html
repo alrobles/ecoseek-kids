@@ -1,50 +1,62 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ecoSeek Kids — Tu asistente científico</title>
+  <title>ecoSeek Kids — Scientific Agent for Ecology</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
 </head>
 <body>
-  <!-- Landing / Welcome -->
+
+  <!-- Language Selector — Floating bar with flags -->
+  <div id="lang-bar" class="lang-bar">
+    <div class="lang-label">🌍</div>
+    <button class="lang-btn active" data-lang="en" title="English">🇬🇧</button>
+    <button class="lang-btn" data-lang="es" title="Español">🇪🇸</button>
+    <button class="lang-btn" data-lang="zh" title="中文">🇨🇳</button>
+    <button class="lang-btn" data-lang="hi" title="हिन्दी">🇮🇳</button>
+    <button class="lang-btn" data-lang="ar" title="العربية">🇸🇦</button>
+    <button class="lang-btn" data-lang="pt" title="Português">🇧🇷</button>
+  </div>
+
+  <!-- Welcome Screen -->
   <div id="welcome-screen" class="screen active">
     <div class="welcome-container">
       <div class="logo-big">🌿</div>
       <h1>ecoSeek <span class="kids-tag">Kids</span></h1>
-      <p class="subtitle">Tu asistente científico para explorar la naturaleza</p>
+      <p class="subtitle" data-i18n="subtitle">Your scientific assistant to explore nature</p>
       <div class="welcome-cards">
-        <button class="topic-card" data-topic="ecologia">
+        <button class="topic-card" data-topic="ecology">
           <span class="topic-icon">🌍</span>
-          <span class="topic-label">Ecología</span>
+          <span class="topic-label" data-i18n="topic_ecology">Ecology</span>
         </button>
-        <button class="topic-card" data-topic="animales">
+        <button class="topic-card" data-topic="animals">
           <span class="topic-icon">🦁</span>
-          <span class="topic-label">Animales</span>
+          <span class="topic-label" data-i18n="topic_animals">Animals</span>
         </button>
-        <button class="topic-card" data-topic="plantas">
+        <button class="topic-card" data-topic="plants">
           <span class="topic-icon">🌱</span>
-          <span class="topic-label">Plantas</span>
+          <span class="topic-label" data-i18n="topic_plants">Plants</span>
         </button>
-        <button class="topic-card" data-topic="tierra">
+        <button class="topic-card" data-topic="earth">
           <span class="topic-icon">🌋</span>
-          <span class="topic-label">La Tierra</span>
+          <span class="topic-label" data-i18n="topic_earth">Earth</span>
         </button>
-        <button class="topic-card" data-topic="espacio">
+        <button class="topic-card" data-topic="space">
           <span class="topic-icon">🔭</span>
-          <span class="topic-label">Espacio</span>
+          <span class="topic-label" data-i18n="topic_space">Space</span>
         </button>
-        <button class="topic-card" data-topic="cuerpo">
+        <button class="topic-card" data-topic="body">
           <span class="topic-icon">🫀</span>
-          <span class="topic-label">Cuerpo Humano</span>
+          <span class="topic-label" data-i18n="topic_body">Human Body</span>
         </button>
       </div>
       <div class="start-chat">
-        <input type="text" id="start-input" placeholder="Pregúntame sobre la naturaleza..." autocomplete="off">
-        <button id="start-btn">Enviar ➜</button>
+        <input type="text" id="start-input" data-i18n-placeholder="ask_placeholder" placeholder="Ask me about nature..." autocomplete="off">
+        <button id="start-btn" data-i18n="send">Send ➜</button>
       </div>
     </div>
   </div>
@@ -52,29 +64,28 @@
   <!-- Chat Screen -->
   <div id="chat-screen" class="screen">
     <header class="chat-header">
-      <button id="back-btn" class="icon-btn" title="Volver">←</button>
+      <button id="back-btn" class="icon-btn" title="Back">←</button>
       <div class="header-center">
         <span class="header-logo">🌿</span>
         <span class="header-title">ecoSeek Kids</span>
       </div>
-      <button id="new-chat-btn" class="icon-btn" title="Nueva pregunta">＋</button>
+      <button id="new-chat-btn" class="icon-btn" title="New question">＋</button>
     </header>
 
-    <div id="chat-messages" class="chat-messages">
-      <!-- Messages injected here -->
-    </div>
+    <div id="chat-messages" class="chat-messages"></div>
 
     <div class="chat-input-area">
       <div class="input-wrapper">
-        <textarea id="chat-input" placeholder="Escribe tu pregunta científica..." rows="1" maxlength="2000"></textarea>
-        <button id="send-btn" title="Enviar">
+        <textarea id="chat-input" data-i18n-placeholder="chat_placeholder" placeholder="Ask a scientific question..." rows="1" maxlength="2000"></textarea>
+        <button id="send-btn" title="Send">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
         </button>
       </div>
-      <p class="input-hint">ecoSeek Kids te ayuda a explorar la ciencia. ¡Siempre verifica lo que aprendes!</p>
+      <p class="input-hint" data-i18n="input_hint">ecoSeek Kids helps you explore science. Always verify what you learn!</p>
     </div>
   </div>
 
+  <script src="i18n.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

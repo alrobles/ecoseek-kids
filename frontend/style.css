@@ -31,7 +31,51 @@ body {
   overflow: hidden;
 }
 
-/* Screens */
+/* ===== LANGUAGE BAR ===== */
+.lang-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+.lang-label {
+  font-size: 1.2rem;
+  margin-right: 0.3rem;
+}
+
+.lang-btn {
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 50px;
+  padding: 0.3rem 0.8rem;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.lang-btn:hover {
+  transform: scale(1.15);
+  background: var(--bg-soft);
+}
+
+.lang-btn.active {
+  border-color: var(--accent);
+  background: #F0FFF4;
+  transform: scale(1.1);
+}
+
+/* ===== SCREENS ===== */
 .screen { display: none; height: 100dvh; }
 .screen.active { display: flex; }
 
@@ -40,6 +84,7 @@ body {
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #FFF9F0 0%, #F0F8FF 50%, #FFF0F5 100%);
+  padding-top: 50px; /* space for lang bar */
 }
 
 .welcome-container {

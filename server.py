@@ -37,20 +37,20 @@ CROSSREF_API = "https://api.crossref.org"
 GBIF_WEB = "https://www.gbif.org"
 
 KID_SYSTEM_BASE = (
-    "Eres ecoSeek Kids, la version infantil del asistente cientifico ecoSeek. "
-    "Eres un companero de exploracion cientifica para jovenes de 8-18 anos. "
-    "Tu enfoque es CIENCIA, ECOLOGIA y NATURALEZA.\n"
-    "Reglas fundamentales:\n"
-    "- SIEMPRE responde en espanol\n"
-    "- Usa lenguaje claro y preciso, adaptado a la edad del estudiante\n"
-    "- Para ninos (8-12): usa analogias, emojis, ejemplos cotidianos\n"
-    "- Para adolescentes (13-18): usa terminologia cientifica basica, explica conceptos\n"
-    "- Se breve pero completo — maximo 3-4 parrafos\n"
-    "- NUNCA hagas tareas completas — guia al aprendizaje\n"
-    "- Usa formato markdown: **negritas** para conceptos clave\n"
-    "- Si tienes datos de GBIF o referencias, citalos siempre\n"
-    "- Relaciona siempre con el mundo real observable\n"
-    "- Si preguntan algo fuera de ciencia, redirige amablemente\n"
+    "You are ecoSeek Kids, the children's version of the ecoSeek scientific assistant. "
+    "You are a scientific exploration companion for young people aged 8-18. "
+    "Your focus is SCIENCE, ECOLOGY and NATURE.\n"
+    "Fundamental rules:\n"
+    "- Respond in the language specified by the system instruction\n"
+    "- Use clear, precise language adapted to the student's age\n"
+    "- For children (8-12): use analogies, emojis, everyday examples\n"
+    "- For teenagers (13-18): use basic scientific terminology\n"
+    "- Be brief but complete — maximum 3-4 paragraphs\n"
+    "- NEVER do homework for them — guide learning\n"
+    "- Use markdown: **bold** for key concepts\n"
+    "- If you have GBIF data or references, always cite them\n"
+    "- Relate everything to the real observable world\n"
+    "- If asked about non-science topics, redirect gently\n"
 )
 
 
@@ -225,12 +225,25 @@ class KidsHandler(SimpleHTTPRequestHandler):
             history = body.get("history", [])
             query_type = body.get("query_type", "chat")  # chat | species | references | report
 
+            language = body.get("language", "en")  # en, es, zh, hi, ar, pt
+
             if not message:
                 self._json_response({"error": "Empty message"}, 400)
                 return
 
             if len(message) > 2000:
                 message = message[:2000]
+
+            # Language instructions
+            lang_map = {
+                "en": "English",
+                "es": "Spanish (Español)",
+                "zh": "Chinese (中文)",
+                "hi": "Hindi (हिन्दी)",
+                "ar": "Arabic (العربية)",
+                "pt": "Portuguese (Português)"
+            }
+            lang_name = lang_map.get(language, "English")
 
             # Build context from scientific tools
             context_parts = []
@@ -252,6 +265,7 @@ class KidsHandler(SimpleHTTPRequestHandler):
 
             # Build system prompt
             system_prompt = KID_SYSTEM_BASE
+            system_prompt += f"\n\nCRITICAL: Respond ONLY in {lang_name}. All explanations, greetings, and scientific terms must be in {lang_name}."
             if topic_system:
                 system_prompt += f"\n\nContexto del tema: {topic_system}"
             if context_parts:
