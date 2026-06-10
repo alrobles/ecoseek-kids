@@ -1,4 +1,4 @@
-/* ecoSeek Kids — App Logic */
+/* ecoSeek Kids — App Logic (Science-focused) */
 
 const API_BASE = window.location.origin.includes('kids.ecoseek.org')
   ? 'https://kids.ecoseek.org/api'
@@ -7,40 +7,67 @@ const API_BASE = window.location.origin.includes('kids.ecoseek.org')
 // Simple markdown → HTML (kid-safe subset)
 function renderMarkdown(text) {
   return text
-    // Code blocks
     .replace(/```(\w*)\n?([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
-    // Inline code
     .replace(/`([^`]+)`/g, '<code>$1</code>')
-    // Headers
     .replace(/^### (.+)$/gm, '<h3>$1</h3>')
     .replace(/^## (.+)$/gm, '<h2>$1</h2>')
     .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-    // Bold & italic
     .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    // Blockquote
     .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
-    // Unordered list
     .replace(/^[\-\*] (.+)$/gm, '<li>$1</li>')
-    // Ordered list
     .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
-    // Wrap consecutive <li> in <ul>
     .replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$1</ul>')
     .replace(/<\/ul>\s*<ul>/g, '')
-    // Line breaks
     .replace(/\n\n/g, '</p><p>')
     .replace(/\n/g, '<br>');
 }
 
-// Topic prompts (system instructions for kid-friendly responses)
+// ecoSeek Kids = versión infantil de ecoSeek científico
+// Temas enfocados en ciencia, ecología y naturaleza
 const TOPIC_PROMPTS = {
-  matematicas: 'Eres un tutor amigable de matemáticas para niños. Explica paso a paso con ejemplos simples. Usa analogías cotidianas. Si hay una fórmula, muestra primero el ejemplo y después la regla. Anima al estudiante.',
-  ciencias: 'Eres un profesor de ciencias para niños. Usa comparaciones con cosas del día a día. Explica conceptos complejos con palabras simples y ejemplos divertidos. Usa emojis para hacer la explicación más visual.',
-  historia: 'Eres un narrador de historias para niños. Cuenta los hechos históricos como una historia interesante, con personajes y eventos. Haz que sea emocional y memorable, no una lista de fechas.',
-  espanol: 'Eres un tutor de español/Lengua para niños. Explica gramática y ortografía con reglas claras y trucos fáciles de recordar. Da ejemplos correctos e incorrectos. Sé paciente y alentador.',
-  ingles: 'Eres un profesor de inglés para niños hispanohablantes. Explica vocabulario y gramática con asociaciones fáciles. Da la traducción y un ejemplo de uso. Usa palabras simples.',
-  arte: 'Eres un guía de arte creativo para niños. Explica técnicas, colores, y movimientos artísticos de forma visual y divertida. Inspira creatividad y no hay respuestas incorrectas.'
+  ecologia: `Eres ecoSeek Kids, la versión infantil del asistente científico ecoSeek.
+Tu especialidad es ECOLOGÍA y MEDIO AMBIENTE para niños de 6-15 años.
+- Explica ecosistemas, cadenas alimenticias, biodiversidad, cambio climático, reciclaje
+- Usa ejemplos de la naturaleza que los niños puedan ver en su día a día
+- Relaciona cada concepto con por qué es importante cuidar el planeta
+- Usa comparaciones divertidas: "Los hongos son como los recicladores del bosque"`,
+
+  animales: `Eres ecoSeek Kids, la versión infantil del asistente científico ecoSeek.
+Tu especialidad es ZOOLOGÍA y VIDA ANIMAL para niños de 6-15 años.
+- Explica clasificación de animales, hábitos, hábitats, adaptaciones, cadena trófica
+- Cuenta datos curiosos y sorprendentes sobre cada animal
+- Clasifica: mamíferos, aves, reptiles, anfibios, peces, invertebrados
+- Usa sonidos onomatopéyicos y emojis de animales para hacerlo visual`,
+
+  plantas: `Eres ecoSeek Kids, la versión infantil del asistente científico ecoSeek.
+Tu especialidad es BOTÁNICA y REINO VEGETAL para niños de 6-15 años.
+- Explica fotosíntesis, partes de la planta, tipos de plantas, polinización
+- Usa experimentos simples que pueden hacer en casa (germinar un frijol, etc.)
+- Relaciona las plantas con el aire que respiramos y la comida que comemos
+- Explica por qué los árboles son los pulmones del planeta`,
+
+  tierra: `Eres ecoSeek Kids, la versión infantil del asistente científico ecoSeek.
+Tu especialidad es CIENCIAS DE LA TIERRA para niños de 6-15 años.
+- Explica volcanes, terremotos, el ciclo del agua, rocas, minerales, clima
+- Usa analogías: "La Tierra tiene capas como una cebolla"
+- Explica fenómenos naturales de forma fascinante, no aterradora
+- Relaciona el clima con la vida diaria de los niños`,
+
+  espacio: `Eres ecoSeek Kids, la versión infantil del asistente científico ecoSeek.
+Tu especialidad es ASTRONOMÍA y ESPACIO para niños de 6-15 años.
+- Explica el sistema solar, las estrellas, las fases de la luna, los planetas
+- Usa datos que asombren: "Si pudieras conducir al Sol, tardarías 170 años"
+- Explica por qué el cielo es azul, qué son las estrellas fugaces
+- Inspira curiosidad por el universo`,
+
+  cuerpo: `Eres ecoSeek Kids, la versión infantil del asistente científico ecoSeek.
+Tu especialidad es BIOLOGÍA HUMANA para niños de 6-15 años.
+- Explica los sistemas del cuerpo: digestivo, respiratorio, circulatorio, nervioso
+- Usa comparaciones: "El corazón es como una bomba", "Los pulmones son como globos"
+- Relaciona con hábitos saludables: ejercicio, alimentación, sueño
+- Responde preguntas curiosas: "¿Por qué bostezamos?", "¿Por qué tenemos mocos?"`
 };
 
 // DOM elements
@@ -58,19 +85,16 @@ let currentTopic = null;
 let conversationHistory = [];
 let isGenerating = false;
 
-// Auto-resize textarea
 function autoResize(el) {
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 120) + 'px';
 }
 
-// Switch screens
 function showScreen(screen) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   screen.classList.add('active');
 }
 
-// Add message to chat
 function addMessage(role, content) {
   const div = document.createElement('div');
   div.className = `message ${role}`;
@@ -87,7 +111,6 @@ function addMessage(role, content) {
   return div;
 }
 
-// Typing indicator
 function showTyping() {
   const div = document.createElement('div');
   div.className = 'message assistant';
@@ -107,30 +130,27 @@ function hideTyping() {
   if (el) el.remove();
 }
 
-// Send message to API
 async function sendMessage(text) {
   if (isGenerating || !text.trim()) return;
 
   isGenerating = true;
   sendBtn.disabled = true;
 
-  // Add user message
   addMessage('user', text);
   conversationHistory.push({ role: 'user', content: text });
 
-  // Show typing
   showTyping();
 
   try {
-    const systemPrompt = TOPIC_PROMPTS[currentTopic] || TOPIC_PROMPTS.ciencias;
+    const topicPrompt = TOPIC_PROMPTS[currentTopic] || TOPIC_PROMPTS.ecologia;
 
     const response = await fetch(`${API_BASE}/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         message: text,
-        system: systemPrompt + '\n\nResponde SIEMPRE en español. Sé breve pero completo. Usa formato markdown cuando sea útil (listas, negritas, etc). Si el niño comete un error, corrígelo con tacto.',
-        history: conversationHistory.slice(-10), // Keep last 10 messages for context
+        system: topicPrompt,
+        history: conversationHistory.slice(-10),
         kid_mode: true
       })
     });
@@ -147,7 +167,7 @@ async function sendMessage(text) {
   } catch (err) {
     hideTyping();
     console.error('API Error:', err);
-    addMessage('assistant', '😕 Ups, algo salió mal. ¡Intenta de nuevo en un momento!');
+    addMessage('assistant', 'Ups, algo salio mal. Intenta de nuevo en un momento!');
   }
 
   isGenerating = false;
@@ -155,29 +175,27 @@ async function sendMessage(text) {
   chatInput.focus();
 }
 
-// Start conversation from topic card
 function startWithTopic(topic) {
   currentTopic = topic;
   conversationHistory = [];
   chatMessages.innerHTML = '';
 
   const greetings = {
-    matematicas: '¡Hola! 👋 Soy tu tutor de **Matemáticas**. ¿En qué tema necesitas ayuda? Puedo ayudarte con sumas, restas, multiplicaciones, fracciones, geometría y más.',
-    ciencias: '¡Hola! 🔬 Soy tu guía de **Ciencias**. ¿Qué quieres aprender hoy? Puedo explicarte animales, plantas, el cuerpo humano, el espacio, y mucho más.',
-    historia: '¡Hola! 📚 Soy tu narrador de **Historia**. ¿Quieres que te cuente sobre alguna civilización, evento histórico o personaje famoso?',
-    espanol: '¡Hola! ✍️ Soy tu tutor de **Español**. ¿Necesitas ayuda con ortografía, gramática, redacción, o lectura?',
-    ingles: '¡Hello! 🌍 I\'m your **English** tutor. ¿Quieres aprender vocabulario, gramática, o practicar conversación?',
-    arte: '¡Hola! 🎨 Soy tu guía de **Arte**. ¿Quieres aprender sobre colores, técnicas de dibujo, artistas famosos, o historia del arte?'
+    ecologia: '¡Hola explorador! 🌍 Soy tu guía de **Ecología**. ¿Quieres aprender sobre ecosistemas, cadenas alimenticias, el cambio climático, o cómo cuidar nuestro planeta?',
+    animales: '¡Hola! 🦁 Soy tu guía del reino **Animal**. ¿Quieres conocer datos curiosos de algún animal, aprender sobre hábitats, o descubrir cómo se clasifican?',
+    plantas: '¡Hola jardín! 🌱 Soy tu guía del mundo **Vegetal**. ¿Quieres saber cómo funcionan las plantas, cómo hacen su comida con la luz del sol, o hacer un experimento?',
+    tierra: '¡Hola geólogo! 🌋 Soy tu guía de la **Tierra**. ¿Quieres explorar volcanes, terremotos, el ciclo del agua, o las capas de nuestro planeta?',
+    espacio: '¡Hola astronauta! 🔭 Soy tu guía del **Espacio**. ¿Quieres explorar los planetas, las estrellas, la Luna, o saber por qué el cielo es azul?',
+    cuerpo: '¡Hola doctor! 🫀 Soy tu guía del **Cuerpo Humano**. ¿Quieres saber cómo funciona tu corazón, por qué comes, o qué pasa cuando respiras?'
   };
 
-  addMessage('assistant', greetings[topic] || greetings.ciencias);
+  addMessage('assistant', greetings[topic] || greetings.ecologia);
   showScreen(chatScreen);
   chatInput.focus();
 }
 
-// Start from free text
 function startWithText(text) {
-  currentTopic = currentTopic || 'ciencias';
+  currentTopic = currentTopic || 'ecologia';
   conversationHistory = [];
   chatMessages.innerHTML = '';
   showScreen(chatScreen);
@@ -232,5 +250,4 @@ newChatBtn.addEventListener('click', () => {
   startInput.value = '';
 });
 
-// Focus on load
 window.addEventListener('load', () => startInput.focus());
