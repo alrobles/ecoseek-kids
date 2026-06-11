@@ -279,15 +279,14 @@
 
 /* ===== EMILY AVATAR IN MESSAGES ===== */
 .emily-msg-avatar {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: linear-gradient(135deg, #E8F5FF, #D4ECFF);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 1rem;
   box-shadow: 0 2px 8px rgba(44,165,141,0.3);
   animation: avatarPulse 3s ease-in-out infinite;
   position: relative;
@@ -295,10 +294,10 @@
 }
 
 .emily-avatar-img {
-  width: 56px;
-  height: 56px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  object-position: center 15%;
+  border-radius: 50%;
 }
 
 .emily-msg-avatar::after {
