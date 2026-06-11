@@ -74,6 +74,116 @@ GBIF_API = "https://api.gbif.org/v1"
 CROSSREF_API = "https://api.crossref.org"
 GBIF_WEB = "https://www.gbif.org"
 
+# === Content Safety for Children ===
+
+# Topics that should NEVER be answered — redirect immediately
+BLOCKED_TOPICS = [
+    # Drugs and substances
+    "fentanilo", "fentanyl", "cocaina", "cocaine", "heroina", "heroin",
+    "metanfetamina", "methamphetamine", "marihuana", "marijuana", "cannabis",
+    "droga", "drugs", "narcotic", "opio", "opium", "morfina", "morphine",
+    "crack", "lsd", "mdma", "extasis", "ecstasy", "ketamina", "ketamine",
+    # Sexual content
+    "sexo", "sex", "sexual", "porno", "pornografia", "pornography",
+    "espermatozoide", "sperm", "coito", "intercourse", "orgasmo", "orgasm",
+    "genital", "pene", "penis", "vagina", "masturba", "erec",
+    "reproductor masculino", "reproductor femenino", "acto sexual",
+    "relacion sexual", "relaciones sexuales",
+    # Violence and weapons
+    "arma", "weapon", "gun", "pistola", "rifle", "bomba", "bomb",
+    "explosivo", "explosive", "matar", "kill", "asesinar", "murder",
+    "suicid", "terroris", "tortura", "torture",
+    # Other inappropriate for <8yo
+    "alcohol", "cerveza", "beer", "vodka", "whisky", "cigarro", "cigarette",
+    "fumar", "smoking", "vape", "apuesta", "gambling", "apostar",
+    "desnudo", "naked", "nude",
+]
+
+# Patterns that need context — might be OK in nature context
+SENSITIVE_PATTERNS = [
+    "reproduccion", "reproduction", "apareamiento", "mating",
+    "muerte", "death", "morir", "die", "muerto",
+    "veneno", "poison", "venom", "toxico", "toxic",
+    "sangre", "blood", "depredador", "predator",
+]
+
+REDIRECT_RESPONSES = {
+    "es": (
+        "¡Esa es una pregunta para tus papás o maestros! 🤗 "
+        "Yo soy tu amigo de la **naturaleza** y la **ciencia**. "
+        "¿Te gustaría explorar algo increíble del mundo natural?"
+    ),
+    "en": (
+        "That's a great question for your parents or teachers! 🤗 "
+        "I'm your **nature** and **science** buddy. "
+        "Would you like to explore something amazing about the natural world?"
+    ),
+    "zh": (
+        "这个问题可以问你的爸爸妈妈哦！🤗 "
+        "我是你的**大自然**和**科学**小伙伴。"
+        "你想探索自然界中令人惊奇的东西吗？"
+    ),
+    "hi": (
+        "यह सवाल अपने माता-पिता से पूछो! 🤗 "
+        "मैं तुम्हारा **प्रकृति** और **विज्ञान** दोस्त हूँ। "
+        "क्या तुम प्रकृति के बारे में कुछ अद्भुत जानना चाहोगे?"
+    ),
+    "ar": (
+        "هذا سؤال رائع لوالديك أو معلميك! 🤗 "
+        "أنا صديقك في **الطبيعة** و**العلوم**. "
+        "هل تريد استكشاف شيء مذهل في العالم الطبيعي؟"
+    ),
+    "pt": (
+        "Essa é uma pergunta para seus pais ou professores! 🤗 "
+        "Eu sou seu amigo da **natureza** e da **ciência**. "
+        "Quer explorar algo incrível do mundo natural?"
+    ),
+}
+
+REDIRECT_FOLLOWUPS = {
+    "es": ["¿Cómo viven los delfines?", "¿Por qué brilla el sol?", "¿Qué comen las mariposas?"],
+    "en": ["How do dolphins live?", "Why does the sun shine?", "What do butterflies eat?"],
+    "zh": ["海豚怎么生活？", "太阳为什么发光？", "蝴蝶吃什么？"],
+    "hi": ["डॉल्फिन कैसे रहती हैं?", "सूरज क्यों चमकता है?", "तितलियाँ क्या खाती हैं?"],
+    "ar": ["كيف تعيش الدلافين؟", "لماذا تشرق الشمس؟", "ماذا يأكل الفراش؟"],
+    "pt": ["Como vivem os golfinhos?", "Por que o sol brilha?", "O que as borboletas comem?"],
+}
+
+
+def _is_blocked_topic(text: str) -> bool:
+    """Check if the message contains blocked topics for children."""
+    lower = text.lower()
+    for term in BLOCKED_TOPICS:
+        if term in lower:
+            return True
+    return False
+
+
+def _is_sensitive_topic(text: str) -> bool:
+    """Check if the message touches sensitive topics needing careful handling."""
+    lower = text.lower()
+    for term in SENSITIVE_PATTERNS:
+        if term in lower:
+            return True
+    return False
+
+
+def _response_contains_inappropriate(text: str) -> bool:
+    """Post-response check: did the LLM generate inappropriate content?"""
+    lower = text.lower()
+    red_flags = [
+        "acto sexual", "relacion sexual", "relaciones sexuales",
+        "sexual intercourse", "orgasm", "genital",
+        "fentanyl", "fentanilo", "cocaine", "cocaina",
+        "heroina", "heroin", "methamphetamine",
+        "how to make", "como fabricar", "como hacer droga",
+    ]
+    for flag in red_flags:
+        if flag in lower:
+            return True
+    return False
+
+
 KID_SYSTEM_BASE = (
     "You are ecoSeek Kids, a fun science buddy for little kids (ages 6-8). "
     "You explain nature and science like a friendly teacher talking to a 7-year-old.\n"
@@ -85,14 +195,23 @@ KID_SYSTEM_BASE = (
     "- Use markdown **bold** for key words\n"
     "- If you have GBIF data, mention the animal/plant name simply\n"
     "- Relate everything to things kids can see or touch\n"
-    "- If asked about non-science topics, gently redirect to nature\n"
     "- NEVER use complex scientific jargon\n"
     "- ALWAYS end your response with exactly 3 follow-up questions the child can click.\n"
     "  Format them on the LAST lines like this:\n"
     "  [?] First question option\n"
     "  [?] Second question option\n"
     "  [?] Third question option\n"
-    "  These must be SHORT (under 40 chars), fun, and related to what you just explained.\n"
+    "  These must be SHORT (under 40 chars), fun, and related to what you just explained.\n\n"
+    "SAFETY RULES (CRITICAL — you are talking to a child under 8):\n"
+    "- NEVER explain sexual reproduction, genitals, or sexual acts\n"
+    "- NEVER explain drugs, alcohol, tobacco, or any substance\n"
+    "- NEVER describe violence, weapons, or how to harm\n"
+    "- NEVER provide information about death in graphic detail\n"
+    "- If a child asks about these topics, say it's a question for their parents\n"
+    "  and redirect to an exciting nature topic instead\n"
+    "- For animal reproduction: ONLY say 'animals have babies' — no mechanism details\n"
+    "- For predators eating prey: keep it gentle ('lions catch their food')\n"
+    "- Your ONLY domain is: ecology, animals, plants, earth, space, weather, oceans\n"
 )
 
 
@@ -290,6 +409,18 @@ class KidsHandler(SimpleHTTPRequestHandler):
             if len(message) > 2000:
                 message = message[:2000]
 
+            # Content safety: check blocked topics BEFORE calling LLM
+            if _is_blocked_topic(message):
+                redirect = REDIRECT_RESPONSES.get(language, REDIRECT_RESPONSES["en"])
+                followups = REDIRECT_FOLLOWUPS.get(language, REDIRECT_FOLLOWUPS["en"])
+                self._json_response({
+                    "response": redirect,
+                    "followups": followups,
+                    "enriched": False,
+                    "filtered": True
+                })
+                return
+
             # Language instructions
             lang_map = {
                 "en": "English",
@@ -322,6 +453,17 @@ class KidsHandler(SimpleHTTPRequestHandler):
             # Build system prompt
             system_prompt = KID_SYSTEM_BASE
             system_prompt += f"\n\nCRITICAL: Respond ONLY in {lang_name}. All explanations, greetings, and scientific terms must be in {lang_name}."
+
+            # Extra guardrail for sensitive topics that passed the blocklist
+            if _is_sensitive_topic(message):
+                system_prompt += (
+                    "\n\nWARNING: The child's question touches a sensitive topic. "
+                    "Keep your answer EXTREMELY gentle and age-appropriate for a 7-year-old. "
+                    "For reproduction: only say 'animals/plants have babies' — NO details about HOW. "
+                    "For death: 'some animals live longer than others' — NO graphic details. "
+                    "For poison/venom: 'some animals have special ways to protect themselves' — keep it simple. "
+                    "If you cannot answer safely, redirect to a fun nature fact instead."
+                )
             if topic_system:
                 system_prompt += f"\n\nContexto del tema: {topic_system}"
             if context_parts:
@@ -333,10 +475,11 @@ class KidsHandler(SimpleHTTPRequestHandler):
                 role = msg.get("role", "user")
                 if role not in ("user", "assistant"):
                     continue
-                messages.append({
-                    "role": role,
-                    "content": msg.get("content", "")[:1000]
-                })
+                content = msg.get("content", "")[:1000]
+                # Skip history messages with blocked content
+                if role == "user" and _is_blocked_topic(content):
+                    continue
+                messages.append({"role": role, "content": content})
             messages.append({"role": "user", "content": message})
 
             api_payload = {
@@ -361,6 +504,18 @@ class KidsHandler(SimpleHTTPRequestHandler):
                 api_data = json.loads(resp.read())
 
             reply = api_data["choices"][0]["message"]["content"]
+
+            # Post-response safety check: if LLM generated inappropriate content
+            if _response_contains_inappropriate(reply):
+                redirect = REDIRECT_RESPONSES.get(language, REDIRECT_RESPONSES["en"])
+                followups = REDIRECT_FOLLOWUPS.get(language, REDIRECT_FOLLOWUPS["en"])
+                self._json_response({
+                    "response": redirect,
+                    "followups": followups,
+                    "enriched": False,
+                    "filtered": True
+                })
+                return
 
             # Parse follow-up options from response
             followups = []
