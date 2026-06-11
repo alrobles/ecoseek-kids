@@ -1,4 +1,4 @@
-/* ecoSeek Kids v2.1 — Scientific Agent with i18n + GBIF */
+/* ecoSeek Kids v2.2 — Scientific Agent with i18n + GBIF + Responsive */
 
 const API_BASE = window.location.origin.includes('kids.ecoseek.org')
   ? 'https://kids.ecoseek.org/api'
@@ -57,6 +57,7 @@ const newChatBtn = document.getElementById('new-chat-btn');
 let currentTopic = null;
 let conversationHistory = [];
 let isGenerating = false;
+let viewMode = 'auto'; // 'auto', 'mobile', 'desktop'
 
 function autoResize(el) {
   el.style.height = 'auto';
@@ -169,7 +170,7 @@ async function sendMessage(text) {
     if (typeof EmilyChat !== 'undefined') EmilyChat.onResponse(reply);
 
     if (data.followups && data.followups.length > 0) {
-      addFollowups(data.followups);
+      setTimeout(() => addFollowups(data.followups), 0);
     }
 
   } catch (err) {
@@ -245,10 +246,44 @@ document.getElementById('home-btn').addEventListener('click', () => {
   startInput.focus();
 });
 
-window.addEventListener('load', () => {
-  startInput.focus();
-  // Initialize Emily Astronaut
-  if (typeof EmilyChat !== 'undefined') {
-    EmilyChat.init();
+// Initialize Emily Astronaut immediately (scripts at end of body, DOM ready)
+if (typeof EmilyChat !== 'undefined') {
+  EmilyChat.init();
+}
+startInput.focus();
+
+// === Responsive: auto-detect device and toggle view mode ===
+function detectDevice() {
+  return window.innerWidth <= 768 || ('ontouchstart' in window);
+}
+
+function setViewMode(mode) {
+  viewMode = mode;
+  const body = document.body;
+  body.classList.remove('mode-mobile', 'mode-desktop');
+  if (mode === 'auto') {
+    body.classList.add(detectDevice() ? 'mode-mobile' : 'mode-desktop');
+  } else {
+    body.classList.add('mode-' + mode);
   }
+  const toggleBtn = document.getElementById('view-toggle');
+  if (toggleBtn) {
+    const isMobile = body.classList.contains('mode-mobile');
+    toggleBtn.textContent = isMobile ? '💻' : '📱';
+    toggleBtn.title = isMobile ? 'Desktop view' : 'Mobile view';
+  }
+}
+
+const viewToggle = document.getElementById('view-toggle');
+if (viewToggle) {
+  viewToggle.addEventListener('click', () => {
+    const isMobile = document.body.classList.contains('mode-mobile');
+    setViewMode(isMobile ? 'desktop' : 'mobile');
+  });
+}
+
+// Auto-detect on load and resize
+setViewMode('auto');
+window.addEventListener('resize', () => {
+  if (viewMode === 'auto') setViewMode('auto');
 });
