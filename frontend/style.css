@@ -50,10 +50,10 @@ body {
 
 .home-btn {
   background: none;
-  border: 2px solid transparent;
+  border: 2px solid var(--accent);
   border-radius: 50px;
-  padding: 0.3rem 0.6rem;
-  font-size: 1.3rem;
+  padding: 0.4rem 0.8rem;
+  font-size: 1.6rem;
   cursor: pointer;
   transition: all 0.2s ease;
   line-height: 1;
@@ -61,7 +61,8 @@ body {
 
 .home-btn:hover {
   transform: scale(1.15);
-  background: var(--bg-soft);
+  background: #F0FFF4;
+  border-color: var(--accent-hover);
 }
 
 .lang-buttons {
@@ -117,8 +118,9 @@ body {
   width: 100%;
 }
 
-.logo-big {
-  font-size: 4rem;
+.logo-svg {
+  width: 200px;
+  height: auto;
   margin-bottom: 0.5rem;
   animation: float 3s ease-in-out infinite;
 }
@@ -126,20 +128,6 @@ body {
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
-}
-
-.welcome-container h1 {
-  font-size: 2.4rem;
-  font-weight: 800;
-  color: var(--text);
-  margin-bottom: 0.3rem;
-}
-
-.kids-tag {
-  background: linear-gradient(135deg, var(--pink), var(--lavender));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .subtitle {
@@ -191,7 +179,12 @@ body {
 .topic-card:nth-child(5):hover { background: #F8F0FF; }
 .topic-card:nth-child(6):hover { background: #FFF0F5; }
 
-.topic-icon { font-size: 2rem; }
+.topic-icon {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 12px;
+}
 .topic-label { font-size: 0.85rem; font-weight: 700; color: var(--text); }
 
 /* Start Input */
@@ -261,6 +254,7 @@ body {
 }
 
 .header-logo { font-size: 1.4rem; }
+.header-logo-img { width: 28px; height: 28px; }
 .header-title { font-weight: 800; font-size: 1.1rem; }
 
 .icon-btn {
