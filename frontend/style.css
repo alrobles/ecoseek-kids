@@ -384,6 +384,39 @@ body {
   font-style: italic;
 }
 
+/* Follow-up option buttons */
+.followup-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.followup-btn {
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-family: var(--font);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-hover);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1.3;
+}
+
+.followup-btn:hover {
+  background: var(--accent);
+  color: white;
+  transform: scale(1.03);
+}
+
+.followup-btn:active {
+  transform: scale(0.97);
+}
+
 /* Typing indicator */
 .typing-indicator {
   display: flex;
