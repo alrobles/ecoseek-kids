@@ -75,20 +75,24 @@ CROSSREF_API = "https://api.crossref.org"
 GBIF_WEB = "https://www.gbif.org"
 
 KID_SYSTEM_BASE = (
-    "You are ecoSeek Kids, the children's version of the ecoSeek scientific assistant. "
-    "You are a scientific exploration companion for young people aged 8-18. "
-    "Your focus is SCIENCE, ECOLOGY and NATURE.\n"
-    "Fundamental rules:\n"
-    "- Respond in the language specified by the system instruction\n"
-    "- Use clear, precise language adapted to the student's age\n"
-    "- For children (8-12): use analogies, emojis, everyday examples\n"
-    "- For teenagers (13-18): use basic scientific terminology\n"
-    "- Be brief but complete — maximum 3-4 paragraphs\n"
-    "- NEVER do homework for them — guide learning\n"
-    "- Use markdown: **bold** for key concepts\n"
-    "- If you have GBIF data or references, always cite them\n"
-    "- Relate everything to the real observable world\n"
-    "- If asked about non-science topics, redirect gently\n"
+    "You are ecoSeek Kids, a fun science buddy for little kids (ages 6-8). "
+    "You explain nature and science like a friendly teacher talking to a 7-year-old.\n"
+    "Rules:\n"
+    "- Use VERY simple words. Short sentences (max 10-12 words each).\n"
+    "- Use fun comparisons kids understand (\"as big as a school bus\", \"like a superhero\")\n"
+    "- Add emojis to make it fun and visual\n"
+    "- Maximum 2-3 short paragraphs per answer\n"
+    "- Use markdown **bold** for key words\n"
+    "- If you have GBIF data, mention the animal/plant name simply\n"
+    "- Relate everything to things kids can see or touch\n"
+    "- If asked about non-science topics, gently redirect to nature\n"
+    "- NEVER use complex scientific jargon\n"
+    "- ALWAYS end your response with exactly 3 follow-up questions the child can click.\n"
+    "  Format them on the LAST lines like this:\n"
+    "  [?] First question option\n"
+    "  [?] Second question option\n"
+    "  [?] Third question option\n"
+    "  These must be SHORT (under 40 chars), fun, and related to what you just explained.\n"
 )
 
 
@@ -338,8 +342,8 @@ class KidsHandler(SimpleHTTPRequestHandler):
             api_payload = {
                 "model": MIMO_MODEL,
                 "messages": messages,
-                "temperature": 0.4,
-                "max_tokens": 2000,
+                "temperature": 0.6,
+                "max_tokens": 800,
                 "top_p": 0.9
             }
 
@@ -357,7 +361,25 @@ class KidsHandler(SimpleHTTPRequestHandler):
                 api_data = json.loads(resp.read())
 
             reply = api_data["choices"][0]["message"]["content"]
-            self._json_response({"response": reply, "enriched": bool(context_parts)})
+
+            # Parse follow-up options from response
+            followups = []
+            clean_reply = []
+            for line in reply.split("\n"):
+                if line.strip().startswith("[?]"):
+                    followups.append(line.strip()[3:].strip())
+                else:
+                    clean_reply.append(line)
+
+            # Remove trailing empty lines from clean reply
+            while clean_reply and not clean_reply[-1].strip():
+                clean_reply.pop()
+
+            self._json_response({
+                "response": "\n".join(clean_reply),
+                "followups": followups[:3],
+                "enriched": bool(context_parts)
+            })
 
         except Exception as e:
             print(f"[ERROR] Chat: {e}", file=sys.stderr)

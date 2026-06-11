@@ -91,6 +91,23 @@ function addMessage(role, content, data = null) {
   return div;
 }
 
+function addFollowups(options) {
+  const container = document.createElement('div');
+  container.className = 'followup-options';
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'followup-btn';
+    btn.textContent = opt;
+    btn.addEventListener('click', () => {
+      container.remove();
+      sendMessage(opt);
+    });
+    container.appendChild(btn);
+  });
+  chatMessages.appendChild(container);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
 function showTyping() {
   const div = document.createElement('div');
   div.className = 'message assistant';
@@ -134,6 +151,10 @@ async function sendMessage(text) {
     hideTyping();
     addMessage('assistant', reply, { enriched: data.enriched });
     conversationHistory.push({ role: 'assistant', content: reply });
+
+    if (data.followups && data.followups.length > 0) {
+      addFollowups(data.followups);
+    }
 
   } catch (err) {
     hideTyping();
