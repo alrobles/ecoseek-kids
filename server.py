@@ -11,11 +11,13 @@ Port: 4100 | Domain: kids.ecoseek.org
 
 import json
 import os
+import re
 import sys
-import ssl
+import time
+from collections import defaultdict
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
-from urllib.parse import urlparse, quote_plus
+from urllib.parse import urlparse, parse_qs, quote_plus
 from urllib.request import Request, urlopen
 
 FRONTEND_DIR = Path(__file__).parent / "frontend"
@@ -25,12 +27,48 @@ MIMO_API_URL = os.environ.get(
 MIMO_API_KEY = os.environ.get("MIMO_API_KEY", "")
 MIMO_MODEL = os.environ.get("MIMO_MODEL", "mimo-v2.5-pro")
 PORT = int(os.environ.get("KIDS_PORT", "4100"))
+BIND_HOST = os.environ.get("KIDS_BIND_HOST", "127.0.0.1")
+ALLOWED_ORIGIN = os.environ.get("KIDS_CORS_ORIGIN", "https://kids.ecoseek.org")
+MAX_BODY_SIZE = 65536  # 64 KB
+RATE_LIMIT_WINDOW = 60  # seconds
+RATE_LIMIT_MAX = 15     # requests per window per IP
 
 # Load API key from file if not set
 if not MIMO_API_KEY:
     _key_file = Path.home() / "env" / "mimo-key"
     if _key_file.exists():
         MIMO_API_KEY = _key_file.read_text().strip()
+
+# Simple in-memory rate limiter
+_rate_buckets: dict[str, list[float]] = defaultdict(list)
+
+
+def _rate_limit_ok(ip: str) -> bool:
+    now = time.monotonic()
+    bucket = _rate_buckets[ip]
+    _rate_buckets[ip] = [t for t in bucket if now - t < RATE_LIMIT_WINDOW]
+    if len(_rate_buckets[ip]) >= RATE_LIMIT_MAX:
+        return False
+    _rate_buckets[ip].append(now)
+    return True
+
+
+SECURITY_HEADERS = {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "X-XSS-Protection": "0",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+    "Content-Security-Policy": (
+        "default-src 'self'; "
+        "script-src 'self'; "
+        "style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; "
+        "font-src 'self' https://fonts.gstatic.com; "
+        "img-src 'self' data:; "
+        "connect-src 'self'; "
+        "frame-ancestors 'none'"
+    ),
+}
 
 GBIF_API = "https://api.gbif.org/v1"
 CROSSREF_API = "https://api.crossref.org"
@@ -120,7 +158,7 @@ def _get_taxon_key(species_name):
         with urlopen(req, timeout=5) as resp:
             data = json.loads(resp.read())
         return data.get("usageKey")
-    except:
+    except Exception:
         return None
 
 
@@ -189,21 +227,35 @@ class KidsHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(FRONTEND_DIR), **kwargs)
 
+    def end_headers(self):
+        for name, value in SECURITY_HEADERS.items():
+            self.send_header(name, value)
+        super().end_headers()
+
     def do_GET(self):
         parsed = urlparse(self.path)
         path = parsed.path.rstrip("/")
 
         if path == "/api/health":
-            self._json_response({"status": "ok", "service": "ecoseek-kids", "version": "2.0"})
+            self._json_response({"status": "ok", "service": "ecoseek-kids"})
         elif path == "/api/species":
-            query = dict(urlparse(self.path).query.split("=", 1) if "=" in urlparse(self.path).query else {}).get("q", "")
+            qs = parse_qs(parsed.query)
+            query = qs.get("q", [""])[0]
             self._json_response(gbif_species_search(query))
         else:
             super().do_GET()
 
     def do_POST(self):
         path = urlparse(self.path).path.rstrip("/")
+
+        client_ip = self.headers.get("CF-Connecting-IP") or self.client_address[0]
+        if path == "/api/chat" and not _rate_limit_ok(client_ip):
+            self._json_response({"error": "Rate limit exceeded. Please wait a moment."}, 429)
+            return
+
         body = self._read_body()
+        if body is None:
+            return
 
         if path == "/api/chat":
             self._handle_chat(body)
@@ -274,8 +326,11 @@ class KidsHandler(SimpleHTTPRequestHandler):
 
             messages = [{"role": "system", "content": system_prompt}]
             for msg in history[-8:]:
+                role = msg.get("role", "user")
+                if role not in ("user", "assistant"):
+                    continue
                 messages.append({
-                    "role": msg.get("role", "user"),
+                    "role": role,
                     "content": msg.get("content", "")[:1000]
                 })
             messages.append({"role": "user", "content": message})
@@ -312,8 +367,6 @@ class KidsHandler(SimpleHTTPRequestHandler):
 
     def _try_extract_species(self, text):
         """Try to detect species names in text and fetch GBIF data."""
-        # Simple heuristic: look for capitalized word pairs (Genus species)
-        import re
         patterns = re.findall(r'\b([A-Z][a-z]+)\s+([a-z]{3,})\b', text)
         for genus, species in patterns:
             full = f"{genus} {species}"
@@ -333,20 +386,29 @@ class KidsHandler(SimpleHTTPRequestHandler):
 
     def _read_body(self):
         length = int(self.headers.get("Content-Length", 0))
-        return json.loads(self.rfile.read(length)) if length else {}
+        if length > MAX_BODY_SIZE:
+            self._json_response({"error": "Request too large"}, 413)
+            return None
+        if not length:
+            return {}
+        try:
+            return json.loads(self.rfile.read(length))
+        except (json.JSONDecodeError, ValueError):
+            self._json_response({"error": "Invalid JSON"}, 400)
+            return None
 
     def _json_response(self, data, code=200):
         body = json.dumps(data, ensure_ascii=False).encode()
         self.send_response(code)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", len(body))
-        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Origin", ALLOWED_ORIGIN)
         self.end_headers()
         self.wfile.write(body)
 
     def do_OPTIONS(self):
         self.send_response(204)
-        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Origin", ALLOWED_ORIGIN)
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
@@ -360,9 +422,9 @@ def main():
         print("ERROR: MIMO_API_KEY not set", file=sys.stderr)
         sys.exit(1)
 
-    server = HTTPServer(("0.0.0.0", PORT), KidsHandler)
+    server = HTTPServer((BIND_HOST, PORT), KidsHandler)
     print(f"ecoSeek Kids v2.0 — Scientific Agent Environment for Ecology")
-    print(f"  http://0.0.0.0:{PORT}")
+    print(f"  http://{BIND_HOST}:{PORT}")
     print(f"  Model: {MIMO_MODEL}")
     print(f"  GBIF: {GBIF_API}")
     print(f"  CrossRef: {CROSSREF_API}")

@@ -4,8 +4,22 @@ const API_BASE = window.location.origin.includes('kids.ecoseek.org')
   ? 'https://kids.ecoseek.org/api'
   : '/api';
 
+function sanitizeHtml(html) {
+  const ALLOWED_TAGS = ['h1','h2','h3','strong','em','code','pre','blockquote','ul','ol','li','p','br'];
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  tmp.querySelectorAll('*').forEach(el => {
+    if (!ALLOWED_TAGS.includes(el.tagName.toLowerCase())) {
+      el.replaceWith(document.createTextNode(el.textContent));
+    }
+    [...el.attributes].forEach(attr => el.removeAttribute(attr.name));
+  });
+  return tmp.innerHTML;
+}
+
 function renderMarkdown(text) {
-  return text
+  const escaped = escapeHtml(text);
+  const html = escaped
     .replace(/```(\w*)\n?([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
     .replace(/`([^`]+)`/g, '<code>$1</code>')
     .replace(/^### (.+)$/gm, '<h3>$1</h3>')
@@ -14,13 +28,14 @@ function renderMarkdown(text) {
     .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+    .replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>')
     .replace(/^[\-\*] (.+)$/gm, '<li>$1</li>')
     .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
     .replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$1</ul>')
     .replace(/<\/ul>\s*<ul>/g, '')
     .replace(/\n\n/g, '</p><p>')
     .replace(/\n/g, '<br>');
+  return sanitizeHtml(html);
 }
 
 function escapeHtml(text) {
