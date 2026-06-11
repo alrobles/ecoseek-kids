@@ -258,7 +258,11 @@ const EmilyChat = (() => {
 
     const avatar = document.createElement('div');
     avatar.className = 'emily-msg-avatar';
-    avatar.textContent = '👩‍🔬';
+    const avatarImg = document.createElement('img');
+    avatarImg.src = 'emily-astronaut.svg';
+    avatarImg.alt = 'Emily';
+    avatarImg.className = 'emily-avatar-img';
+    avatar.appendChild(avatarImg);
 
     // Move bubble into row
     bubble.parentNode.insertBefore(row, bubble);

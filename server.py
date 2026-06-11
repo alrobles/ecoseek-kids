@@ -151,10 +151,11 @@ REDIRECT_FOLLOWUPS = {
 
 
 def _is_blocked_topic(text: str) -> bool:
-    """Check if the message contains blocked topics for children."""
+    """Check if the message contains blocked topics for children.
+    Uses word-boundary matching to avoid false positives like 'segun' matching 'gun'."""
     lower = text.lower()
     for term in BLOCKED_TOPICS:
-        if term in lower:
+        if re.search(r'\b' + re.escape(term), lower):
             return True
     return False
 
@@ -163,7 +164,7 @@ def _is_sensitive_topic(text: str) -> bool:
     """Check if the message touches sensitive topics needing careful handling."""
     lower = text.lower()
     for term in SENSITIVE_PATTERNS:
-        if term in lower:
+        if re.search(r'\b' + re.escape(term), lower):
             return True
     return False
 

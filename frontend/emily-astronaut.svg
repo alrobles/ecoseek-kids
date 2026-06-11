@@ -39,12 +39,6 @@
     </linearGradient>
   </defs>
 
-  <!-- ===== JETPACK FLAME ===== -->
-  <g class="jetpack-flame">
-    <ellipse cx="100" cy="240" rx="8" ry="18" fill="#FF6B35" opacity="0.9"/>
-    <ellipse cx="100" cy="238" rx="5" ry="14" fill="#FFD700" opacity="0.8"/>
-    <ellipse cx="100" cy="236" rx="3" ry="10" fill="#FFF5CC" opacity="0.7"/>
-  </g>
 
   <!-- ===== BACKPACK (behind body) ===== -->
   <rect x="78" y="165" width="44" height="45" rx="8" fill="url(#backpack)" stroke="#888" stroke-width="1.5"/>
