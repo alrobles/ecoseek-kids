@@ -536,7 +536,25 @@ body {
 .chat-messages::-webkit-scrollbar-track { background: transparent; }
 .chat-messages::-webkit-scrollbar-thumb { background: #DDD; border-radius: 3px; }
 
-/* ===== RESPONSIVE ===== */
+/* ===== VIEW TOGGLE BUTTON ===== */
+.view-toggle {
+  background: none;
+  border: 2px solid var(--lavender);
+  border-radius: 50px;
+  padding: 0.3rem 0.6rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.view-toggle:hover {
+  transform: scale(1.15);
+  background: #F8F0FF;
+  border-color: #B39DDB;
+}
+
+/* ===== RESPONSIVE: Auto-detect media queries ===== */
 @media (max-width: 600px) {
   .welcome-cards { grid-template-columns: repeat(2, 1fr); }
   .welcome-container h1 { font-size: 1.8rem; }
@@ -547,4 +565,82 @@ body {
 @media (max-width: 400px) {
   .welcome-cards { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
   .topic-card { padding: 0.8rem 0.5rem; }
+}
+
+/* ===== RESPONSIVE: Mode-based overrides (toggle) ===== */
+
+/* Mobile mode (forced or auto-detected) */
+body.mode-mobile .lang-bar {
+  padding: 0.3rem 0.5rem;
+  gap: 0.3rem;
+}
+body.mode-mobile .lang-btn {
+  padding: 0.25rem 0.45rem;
+  font-size: 0.75rem;
+}
+body.mode-mobile .home-btn {
+  font-size: 1.3rem;
+  padding: 0.3rem 0.6rem;
+}
+body.mode-mobile .welcome-cards {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+}
+body.mode-mobile .topic-icon {
+  width: 56px;
+  height: 56px;
+}
+body.mode-mobile .topic-label {
+  font-size: 0.75rem;
+}
+body.mode-mobile .topic-card {
+  padding: 0.8rem 0.5rem;
+}
+body.mode-mobile .logo-svg {
+  width: 140px;
+}
+body.mode-mobile .subtitle {
+  font-size: 0.9rem;
+  margin-bottom: 1.2rem;
+}
+body.mode-mobile .welcome-container {
+  padding: 1rem;
+}
+body.mode-mobile #welcome-screen {
+  padding-top: 42px;
+}
+body.mode-mobile .message {
+  max-width: 92%;
+}
+body.mode-mobile .msg-bubble {
+  padding: 0.7rem 0.9rem;
+  font-size: 0.9rem;
+}
+body.mode-mobile .followup-btn {
+  padding: 0.6rem 0.9rem;
+  font-size: 0.8rem;
+}
+body.mode-mobile .chat-input-area {
+  padding: 0.5rem 0.6rem;
+}
+body.mode-mobile .input-hint {
+  font-size: 0.7rem;
+}
+
+/* Desktop mode (forced) — ensure full-width experience */
+body.mode-desktop .welcome-cards {
+  grid-template-columns: repeat(3, 1fr);
+}
+body.mode-desktop .welcome-container {
+  max-width: 700px;
+}
+body.mode-desktop .topic-icon {
+  width: 80px;
+  height: 80px;
+}
+body.mode-desktop .logo-svg {
+  width: 200px;
+}
+body.mode-desktop .message {
+  max-width: 75%;
 }
