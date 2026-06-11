@@ -66,6 +66,14 @@ function autoResize(el) {
 function showScreen(screen) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   screen.classList.add('active');
+  // Emily reacts to screen changes
+  if (typeof EmilyChat !== 'undefined') {
+    if (screen.id === 'chat-screen') {
+      EmilyChat.onChatEnter();
+    } else {
+      EmilyChat.onChatLeave();
+    }
+  }
 }
 
 function addMessage(role, content, data = null) {
@@ -88,6 +96,10 @@ function addMessage(role, content, data = null) {
 
   chatMessages.appendChild(div);
   chatMessages.scrollTop = chatMessages.scrollHeight;
+  // Decorate assistant messages with Emily avatar
+  if (role === 'assistant' && typeof EmilyChat !== 'undefined') {
+    EmilyChat.decorateMessage(div);
+  }
   return div;
 }
 
@@ -130,6 +142,8 @@ async function sendMessage(text) {
   addMessage('user', text);
   conversationHistory.push({ role: 'user', content: text });
   showTyping();
+  // Emily reacts to user message
+  if (typeof EmilyChat !== 'undefined') EmilyChat.onUserSend();
 
   try {
     const response = await fetch(`${API_BASE}/chat`, {
@@ -151,6 +165,8 @@ async function sendMessage(text) {
     hideTyping();
     addMessage('assistant', reply, { enriched: data.enriched });
     conversationHistory.push({ role: 'assistant', content: reply });
+    // Emily celebrates the response
+    if (typeof EmilyChat !== 'undefined') EmilyChat.onResponse(reply);
 
     if (data.followups && data.followups.length > 0) {
       addFollowups(data.followups);
@@ -159,6 +175,8 @@ async function sendMessage(text) {
   } catch (err) {
     hideTyping();
     addMessage('assistant', 'Something went wrong. Try again!');
+    // Emily goes idle on error
+    if (typeof EmilyChat !== 'undefined') EmilyChat.setState('idle');
   }
 
   isGenerating = false;
@@ -227,4 +245,10 @@ document.getElementById('home-btn').addEventListener('click', () => {
   startInput.focus();
 });
 
-window.addEventListener('load', () => startInput.focus());
+window.addEventListener('load', () => {
+  startInput.focus();
+  // Initialize Emily Astronaut
+  if (typeof EmilyChat !== 'undefined') {
+    EmilyChat.init();
+  }
+});

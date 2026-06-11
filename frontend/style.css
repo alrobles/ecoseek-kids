@@ -328,6 +328,13 @@ body {
   border: 1px solid var(--border);
 }
 
+/* Emily avatar row in messages */
+.message.assistant .msg-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
 /* Markdown-ish styling inside assistant messages */
 .msg-bubble h1, .msg-bubble h2, .msg-bubble h3 {
   font-weight: 800;

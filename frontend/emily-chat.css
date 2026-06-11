@@ -1,0 +1,442 @@
+/* ===== EMILY ASTRONAUT CHAT SYSTEM ===== */
+
+/* Emily container - fixed floating position */
+.emily-container {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  width: 120px;
+  height: 160px;
+  z-index: 50;
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.emily-container.hidden {
+  opacity: 0;
+  transform: scale(0.5) translateY(50px);
+  pointer-events: none;
+}
+
+.emily-container.visible {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.emily-svg-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  animation: emilyFloat 4s ease-in-out infinite;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
+}
+
+.emily-svg-wrapper svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ===== CORE FLOATING ANIMATION ===== */
+@keyframes emilyFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  25% {
+    transform: translateY(-10px) rotate(0.5deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(1deg);
+  }
+  75% {
+    transform: translateY(-12px) rotate(-0.5deg);
+  }
+}
+
+/* ===== THINKING STATE (when waiting for API) ===== */
+.emily-container.emily-thinking .emily-svg-wrapper {
+  animation: emilyThink 2s ease-in-out infinite;
+}
+
+@keyframes emilyThink {
+  0%, 100% {
+    transform: translateY(-5px) rotate(-3deg);
+  }
+  30% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+  60% {
+    transform: translateY(-8px) rotate(-2deg);
+  }
+}
+
+/* ===== TALKING STATE (when message appears) ===== */
+.emily-container.emily-talking .emily-svg-wrapper {
+  animation: emilyTalk 0.6s ease-in-out 3;
+}
+
+@keyframes emilyTalk {
+  0%, 100% {
+    transform: translateY(-5px) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translateY(-8px) rotate(-2deg) scale(1.03);
+  }
+  50% {
+    transform: translateY(-3px) rotate(1deg) scale(0.98);
+  }
+  75% {
+    transform: translateY(-10px) rotate(-1deg) scale(1.02);
+  }
+}
+
+/* ===== CELEBRATE STATE (after delivering answer) ===== */
+.emily-container.emily-celebrate .emily-svg-wrapper {
+  animation: emilyCelebrate 0.8s ease-in-out 2;
+}
+
+@keyframes emilyCelebrate {
+  0% {
+    transform: translateY(-5px) rotate(0deg) scale(1);
+  }
+  20% {
+    transform: translateY(-20px) rotate(-5deg) scale(1.1);
+  }
+  40% {
+    transform: translateY(-8px) rotate(3deg) scale(1);
+  }
+  60% {
+    transform: translateY(-15px) rotate(-3deg) scale(1.05);
+  }
+  80% {
+    transform: translateY(-5px) rotate(1deg) scale(1);
+  }
+  100% {
+    transform: translateY(-5px) rotate(0deg) scale(1);
+  }
+}
+
+/* ===== WAVE STATE (greeting) ===== */
+.emily-container.emily-wave .emily-svg-wrapper {
+  animation: emilyWave 1.2s ease-in-out 2;
+}
+
+@keyframes emilyWave {
+  0%, 100% {
+    transform: translateY(-5px) rotate(0deg);
+  }
+  15% {
+    transform: translateY(-10px) rotate(8deg);
+  }
+  30% {
+    transform: translateY(-5px) rotate(-3deg);
+  }
+  45% {
+    transform: translateY(-10px) rotate(6deg);
+  }
+  60% {
+    transform: translateY(-5px) rotate(-2deg);
+  }
+}
+
+/* ===== SVG INTERNAL ANIMATIONS ===== */
+
+/* Jetpack flame flicker */
+.jetpack-flame {
+  animation: flameFlicker 0.3s ease-in-out infinite alternate;
+  transform-origin: center bottom;
+}
+
+@keyframes flameFlicker {
+  0% {
+    transform: scaleY(1) scaleX(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scaleY(1.15) scaleX(0.85);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scaleY(0.9) scaleX(1.1);
+    opacity: 0.95;
+  }
+}
+
+/* Star twinkle */
+.star-1 { animation: twinkle 2s ease-in-out infinite; }
+.star-2 { animation: twinkle 2.5s ease-in-out infinite 0.5s; }
+.star-3 { animation: twinkle 3s ease-in-out infinite 1s; }
+.star-4 { animation: twinkle 2.2s ease-in-out infinite 0.8s; }
+.star-5 { animation: twinkle 2.8s ease-in-out infinite 1.5s; }
+.star-6 { animation: twinkle 3.2s ease-in-out infinite 0.3s; }
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+}
+
+/* Particles orbit */
+.particle {
+  animation: particleDrift 6s ease-in-out infinite;
+}
+
+.p1 { animation-delay: 0s; animation-duration: 5s; }
+.p2 { animation-delay: 1s; animation-duration: 7s; }
+.p3 { animation-delay: 2s; animation-duration: 6s; }
+.p4 { animation-delay: 0.5s; animation-duration: 8s; }
+
+@keyframes particleDrift {
+  0%, 100% {
+    transform: translate(0, 0);
+    opacity: 0.3;
+  }
+  25% {
+    transform: translate(5px, -8px);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate(-3px, -12px);
+    opacity: 0.4;
+  }
+  75% {
+    transform: translate(8px, -5px);
+    opacity: 0.6;
+  }
+}
+
+/* Helmet glint sweep */
+.emily-svg-wrapper svg path[opacity="0.6"] {
+  animation: glintSweep 4s ease-in-out infinite;
+}
+
+@keyframes glintSweep {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.7; }
+}
+
+/* ===== SPEECH BUBBLE FROM EMILY ===== */
+.emily-speech-bubble {
+  position: fixed;
+  bottom: 270px;
+  right: 140px;
+  max-width: 280px;
+  background: white;
+  border: 2px solid var(--accent, #7EC8A0);
+  border-radius: 18px 18px 18px 4px;
+  padding: 12px 16px;
+  font-family: var(--font, 'Nunito', sans-serif);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text, #3D3D3D);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  z-index: 49;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.8) translateY(10px);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.emily-speech-bubble.visible {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.emily-speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  right: 20px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid white;
+  border-right: 10px solid transparent;
+  border-top: 10px solid white;
+  border-bottom: 10px solid transparent;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.05));
+}
+
+.emily-speech-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: -11px;
+  right: 18px;
+  width: 0;
+  height: 0;
+  border-left: 12px solid var(--accent, #7EC8A0);
+  border-right: 12px solid transparent;
+  border-top: 12px solid var(--accent, #7EC8A0);
+  border-bottom: 12px solid transparent;
+  z-index: -1;
+}
+
+/* Bubble typing dots */
+.emily-speech-bubble .bubble-dots {
+  display: flex;
+  gap: 4px;
+  padding: 4px 0;
+}
+
+.emily-speech-bubble .bubble-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--accent, #7EC8A0);
+  border-radius: 50%;
+  animation: bubbleBounce 1.4s ease-in-out infinite;
+}
+
+.emily-speech-bubble .bubble-dot:nth-child(2) { animation-delay: 0.2s; }
+.emily-speech-bubble .bubble-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bubbleBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* ===== EMILY AVATAR IN MESSAGES ===== */
+.emily-msg-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2CA58D, #1E8A74);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(44,165,141,0.3);
+  animation: avatarPulse 3s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.emily-msg-avatar::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%);
+  animation: avatarShine 3s ease-in-out infinite;
+}
+
+@keyframes avatarPulse {
+  0%, 100% { box-shadow: 0 2px 8px rgba(44,165,141,0.3); }
+  50% { box-shadow: 0 2px 16px rgba(44,165,141,0.5); }
+}
+
+@keyframes avatarShine {
+  0% { transform: translateX(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) rotate(45deg); }
+}
+
+/* Message with Emily avatar */
+.message.assistant .msg-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/* ===== CHAT STARS BACKGROUND (subtle) ===== */
+.chat-stars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.chat-star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: #FFD700;
+  border-radius: 50%;
+  animation: chatStarDrift 8s linear infinite;
+  opacity: 0;
+}
+
+@keyframes chatStarDrift {
+  0% {
+    transform: translateY(100vh) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.5;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(-20px) scale(1);
+    opacity: 0;
+  }
+}
+
+/* ===== SPARKLE BURST (on message receive) ===== */
+.sparkle-burst {
+  position: fixed;
+  pointer-events: none;
+  z-index: 60;
+}
+
+.sparkle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  animation: sparkleFly 0.8s ease-out forwards;
+}
+
+@keyframes sparkleFly {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--sx), var(--sy)) scale(0);
+    opacity: 0;
+  }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .emily-container {
+    width: 80px;
+    height: 110px;
+    bottom: 90px;
+    right: 10px;
+  }
+
+  .emily-speech-bubble {
+    max-width: 200px;
+    bottom: 210px;
+    right: 100px;
+    font-size: 0.8rem;
+    padding: 10px 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .emily-container {
+    width: 65px;
+    height: 90px;
+    bottom: 85px;
+    right: 5px;
+  }
+
+  .emily-speech-bubble {
+    max-width: 160px;
+    bottom: 185px;
+    right: 75px;
+    font-size: 0.75rem;
+  }
+}
