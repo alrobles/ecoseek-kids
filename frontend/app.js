@@ -197,4 +197,13 @@ newChatBtn.addEventListener('click', () => {
   startInput.value = '';
 });
 
+document.getElementById('home-btn').addEventListener('click', () => {
+  conversationHistory = [];
+  chatMessages.innerHTML = '';
+  currentTopic = null;
+  startInput.value = '';
+  showScreen(welcomeScreen);
+  startInput.focus();
+});
+
 window.addEventListener('load', () => startInput.focus());
