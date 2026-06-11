@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" width="200" height="280">
+  <defs>
+    <!-- Helmet glass gradient -->
+    <radialGradient id="helmetGlass" cx="45%" cy="35%" r="50%">
+      <stop offset="0%" stop-color="rgba(160,210,240,0.4)"/>
+      <stop offset="60%" stop-color="rgba(100,180,230,0.2)"/>
+      <stop offset="100%" stop-color="rgba(60,140,200,0.15)"/>
+    </radialGradient>
+    <!-- Visor glint -->
+    <linearGradient id="visorGlint" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.7)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+    <!-- Suit gradient -->
+    <linearGradient id="suitGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E8E8E8"/>
+      <stop offset="100%" stop-color="#D0D0D0"/>
+    </linearGradient>
+    <!-- Teal accent -->
+    <linearGradient id="tealAccent" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2CA58D"/>
+      <stop offset="100%" stop-color="#1E8A74"/>
+    </linearGradient>
+    <!-- Hair gradient -->
+    <linearGradient id="hairGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B6914"/>
+      <stop offset="50%" stop-color="#6B4E12"/>
+      <stop offset="100%" stop-color="#5A3E0E"/>
+    </linearGradient>
+    <!-- Star sparkle filter -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <!-- Backpack -->
+    <linearGradient id="backpack" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#B0B0B0"/>
+      <stop offset="100%" stop-color="#909090"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ===== JETPACK FLAME ===== -->
+  <g class="jetpack-flame">
+    <ellipse cx="100" cy="240" rx="8" ry="18" fill="#FF6B35" opacity="0.9"/>
+    <ellipse cx="100" cy="238" rx="5" ry="14" fill="#FFD700" opacity="0.8"/>
+    <ellipse cx="100" cy="236" rx="3" ry="10" fill="#FFF5CC" opacity="0.7"/>
+  </g>
+
+  <!-- ===== BACKPACK (behind body) ===== -->
+  <rect x="78" y="165" width="44" height="45" rx="8" fill="url(#backpack)" stroke="#888" stroke-width="1.5"/>
+  <rect x="85" y="172" width="12" height="6" rx="2" fill="#2CA58D" opacity="0.8"/>
+  <rect x="85" y="182" width="12" height="6" rx="2" fill="#FF6B35" opacity="0.6"/>
+  <!-- Backpack tubes -->
+  <path d="M78 180 Q65 175 60 185" stroke="#888" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M122 180 Q135 175 140 185" stroke="#888" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- ===== BODY / SPACESUIT ===== -->
+  <path d="M65 160 Q65 140 80 130 L120 130 Q135 140 135 160 L138 215 Q138 230 125 232 L75 232 Q62 230 62 215 Z"
+        fill="url(#suitGrad)" stroke="#BBB" stroke-width="1.5"/>
+  <!-- Suit details - chest panel -->
+  <rect x="85" y="145" width="30" height="20" rx="4" fill="url(#tealAccent)" opacity="0.9"/>
+  <!-- ecoSeek leaf emblem on chest -->
+  <path d="M100 148 C95 152 92 156 95 160 C98 158 100 155 100 152 C100 155 102 158 105 160 C108 156 105 152 100 148Z"
+        fill="#4ADE80" stroke="#22C55E" stroke-width="0.5"/>
+  <!-- Suit arm left -->
+  <path d="M65 155 Q48 160 42 180 Q40 190 48 195" fill="url(#suitGrad)" stroke="#BBB" stroke-width="1.5"/>
+  <!-- Glove left -->
+  <ellipse cx="48" cy="198" rx="10" ry="8" fill="#E0E0E0" stroke="#BBB" stroke-width="1"/>
+  <!-- Suit arm right -->
+  <path d="M135 155 Q152 160 158 180 Q160 190 152 195" fill="url(#suitGrad)" stroke="#BBB" stroke-width="1.5"/>
+  <!-- Glove right -->
+  <ellipse cx="152" cy="198" rx="10" ry="8" fill="#E0E0E0" stroke="#BBB" stroke-width="1"/>
+  <!-- Waist belt -->
+  <rect x="68" y="205" width="64" height="8" rx="4" fill="url(#tealAccent)"/>
+  <circle cx="100" cy="209" r="4" fill="#FFD700" stroke="#DAA520" stroke-width="0.5"/>
+  <!-- Legs -->
+  <path d="M75 232 L72 265 Q72 272 80 272 L90 272 Q95 272 95 268 L95 232" fill="url(#suitGrad)" stroke="#BBB" stroke-width="1"/>
+  <path d="M105 232 L105 268 Q105 272 110 272 L120 272 Q128 272 128 265 L125 232" fill="url(#suitGrad)" stroke="#BBB" stroke-width="1"/>
+  <!-- Boots -->
+  <path d="M70 265 Q68 275 75 276 L92 276 Q97 276 97 270 L95 265" fill="#2CA58D" stroke="#1E8A74" stroke-width="1"/>
+  <path d="M103 265 Q102 275 108 276 L125 276 Q132 276 130 270 L128 265" fill="#2CA58D" stroke="#1E8A74" stroke-width="1"/>
+
+  <!-- ===== NECK ===== -->
+  <rect x="88" y="118" width="24" height="16" rx="4" fill="#F5D0A9"/>
+
+  <!-- ===== HEAD ===== -->
+  <ellipse cx="100" cy="85" rx="38" ry="42" fill="#F5D0A9"/>
+
+  <!-- ===== HAIR ===== -->
+  <!-- Back hair mass -->
+  <path d="M60 80 Q58 45 75 30 Q90 20 105 22 Q125 25 138 45 Q142 60 140 85
+           Q140 95 135 100 L135 75 Q130 55 115 42 Q100 32 82 38 Q68 45 63 65 Z"
+        fill="url(#hairGrad)"/>
+  <!-- Hair top volume -->
+  <path d="M65 75 Q62 50 78 35 Q95 22 110 28 Q128 35 138 55 Q140 65 138 78"
+        fill="url(#hairGrad)"/>
+  <!-- Bangs / fringe -->
+  <path d="M68 68 Q75 52 88 45 Q95 42 100 44 L95 62 Q85 58 75 62 Z" fill="#7A5B10"/>
+  <path d="M100 44 Q108 42 118 48 Q128 55 132 68 L125 60 Q115 50 105 48 Z" fill="#7A5B10"/>
+  <!-- Side hair strands -->
+  <path d="M62 82 Q58 100 62 115 Q64 110 63 100 Q64 90 66 82" fill="#6B4E12"/>
+  <path d="M138 82 Q142 100 138 115 Q136 110 137 100 Q136 90 134 82" fill="#6B4E12"/>
+
+  <!-- ===== FACE ===== -->
+  <!-- Eyes -->
+  <ellipse cx="85" cy="82" rx="7" ry="8" fill="white"/>
+  <ellipse cx="115" cy="82" rx="7" ry="8" fill="white"/>
+  <circle cx="86" cy="83" r="4.5" fill="#4A3520"/>
+  <circle cx="116" cy="83" r="4.5" fill="#4A3520"/>
+  <circle cx="87.5" cy="81.5" r="1.8" fill="white"/>
+  <circle cx="117.5" cy="81.5" r="1.8" fill="white"/>
+  <!-- Eyebrows -->
+  <path d="M76 72 Q82 68 92 71" stroke="#5A3E0E" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M108 71 Q118 68 124 72" stroke="#5A3E0E" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Eyelashes -->
+  <path d="M78 78 L76 75" stroke="#4A3520" stroke-width="1" stroke-linecap="round"/>
+  <path d="M122 78 L124 75" stroke="#4A3520" stroke-width="1" stroke-linecap="round"/>
+  <!-- Nose -->
+  <path d="M98 90 Q100 95 102 90" stroke="#D4A97A" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <!-- Smile -->
+  <path d="M88 100 Q100 110 112 100" stroke="#C47A5A" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Cheek blush -->
+  <ellipse cx="76" cy="96" rx="7" ry="4" fill="#FFB5C2" opacity="0.4"/>
+  <ellipse cx="124" cy="96" rx="7" ry="4" fill="#FFB5C2" opacity="0.4"/>
+
+  <!-- ===== GLASSES ===== -->
+  <rect x="73" y="73" width="24" height="18" rx="6" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="103" y="73" width="24" height="18" rx="6" fill="none" stroke="#333" stroke-width="2"/>
+  <path d="M97 80 L103 80" stroke="#333" stroke-width="2"/>
+  <path d="M73 80 L68 78" stroke="#333" stroke-width="1.5"/>
+  <path d="M127 80 L132 78" stroke="#333" stroke-width="1.5"/>
+
+  <!-- ===== HELMET ===== -->
+  <ellipse cx="100" cy="80" rx="50" ry="52" fill="none" stroke="#C0C0C0" stroke-width="4"/>
+  <ellipse cx="100" cy="80" rx="50" ry="52" fill="url(#helmetGlass)" opacity="0.3"/>
+  <!-- Helmet rim -->
+  <ellipse cx="100" cy="120" rx="42" ry="8" fill="#A0A0A0" stroke="#888" stroke-width="1"/>
+  <!-- Helmet visor glint -->
+  <path d="M60 60 Q70 50 85 55" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M62 68 Q68 62 76 64" stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.4"/>
+  <!-- Helmet top antenna -->
+  <line x1="100" y1="28" x2="100" y2="18" stroke="#C0C0C0" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="100" cy="15" r="4" fill="#FF6B35" stroke="#E55A25" stroke-width="1"/>
+
+  <!-- ===== FLOATING STARS (decorative) ===== -->
+  <g class="stars" filter="url(#glow)">
+    <path class="star star-1" d="M25 40 L27 45 L32 45 L28 48 L30 53 L25 50 L20 53 L22 48 L18 45 L23 45Z" fill="#FFD700" opacity="0.8"/>
+    <path class="star star-2" d="M170 30 L172 34 L176 34 L173 36 L174 40 L170 38 L166 40 L167 36 L164 34 L168 34Z" fill="#FFD700" opacity="0.7"/>
+    <circle class="star star-3" cx="15" cy="120" r="2.5" fill="#A0D2F0" opacity="0.6"/>
+    <circle class="star star-4" cx="185" cy="100" r="2" fill="#FFB5C2" opacity="0.6"/>
+    <circle class="star star-5" cx="30" cy="200" r="1.8" fill="#D4B8F0" opacity="0.5"/>
+    <circle class="star star-6" cx="175" cy="180" r="2.2" fill="#B8F0D4" opacity="0.5"/>
+  </g>
+
+  <!-- ===== SMALL FLOATING PARTICLES ===== -->
+  <circle class="particle p1" cx="20" cy="150" r="1.5" fill="#FFD700" opacity="0.4"/>
+  <circle class="particle p2" cx="180" cy="60" r="1" fill="#A0D2F0" opacity="0.4"/>
+  <circle class="particle p3" cx="15" cy="240" r="1.2" fill="#FFB5C2" opacity="0.3"/>
+  <circle class="particle p4" cx="190" cy="220" r="1.5" fill="#B8F0D4" opacity="0.3"/>
+</svg>
