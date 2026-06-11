@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="earthSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FF8A65"/>
+      <stop offset="60%" stop-color="#FFAB91"/>
+      <stop offset="100%" stop-color="#BCAAA4"/>
+    </linearGradient>
+    <radialGradient id="lava" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFEB3B"/>
+      <stop offset="30%" stop-color="#FF6F00"/>
+      <stop offset="100%" stop-color="#BF360C"/>
+    </radialGradient>
+    <radialGradient id="magma" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#FF6F00"/>
+      <stop offset="100%" stop-color="#D84315"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="200" height="200" fill="url(#earthSky)"/>
+
+  <!-- Sun (setting, large) -->
+  <circle cx="100" cy="60" r="28" fill="#FF7043"/>
+  <circle cx="100" cy="60" r="24" fill="#FFAB40"/>
+
+  <!-- Far mountains background layer -->
+  <polygon points="0,140 40,100 80,140 120,85 160,135 200,100 200,200 0,200" fill="#8D6E63" opacity="0.5"/>
+
+  <!-- Volcano mountain -->
+  <polygon points="60,170 100,80 140,170" fill="#795548"/>
+  <polygon points="60,170 100,80 100,170" fill="#8D6E63"/>
+  <!-- Snow cap -->
+  <path d="M90 85 Q100 75 110 85 Q100 92 90 85 Z" fill="white" opacity="0.6"/>
+
+  <!-- Volcano crater -->
+  <ellipse cx="100" cy="82" rx="12" ry="5" fill="#4E342E"/>
+  <ellipse cx="100" cy="80" rx="8" ry="4" fill="url(#magma)"/>
+
+  <!-- Lava erupting -->
+  <path d="M96 82 Q94 65 100 50 Q106 65 104 82" fill="url(#lava)"/>
+  <circle cx="92" cy="55" r="2.5" fill="#FF5722"/>
+  <circle cx="100" cy="48" r="2" fill="#FF9800"/>
+  <circle cx="107" cy="58" r="2.5" fill="#FF5722"/>
+
+  <!-- Lava flow left -->
+  <path d="M92 82 Q85 90 80 100 Q75 115 70 130 Q68 140 65 155" stroke="#FF6F00" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M88 82 Q82 88 78 97 Q73 110 68 125" stroke="#FF9800" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- Lava flow right -->
+  <path d="M108 82 Q115 90 122 105 Q128 120 132 140 Q135 150 138 160" stroke="#FF6F00" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M112 82 Q118 92 124 108 Q128 125 132 145" stroke="#FF9800" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- Left mountain -->
+  <polygon points="0,170 35,115 70,170" fill="#6D4C41"/>
+  <polygon points="0,170 35,115 35,170" fill="#8D6E63"/>
+  <path d="M28 118 Q35 110 42 118 Q35 122 28 118 Z" fill="white" opacity="0.5"/>
+
+  <!-- Right mountain -->
+  <polygon points="130,170 165,105 200,170" fill="#6D4C41"/>
+  <polygon points="130,170 165,105 165,170" fill="#8D6E63"/>
+  <path d="M158 108 Q165 100 172 108 Q165 112 158 108 Z" fill="white" opacity="0.5"/>
+
+  <!-- Rocks and boulders foreground -->
+  <ellipse cx="30" cy="175" rx="14" ry="9" fill="#795548"/>
+  <ellipse cx="28" cy="173" rx="12" ry="7" fill="#8D6E63"/>
+  <ellipse cx="170" cy="180" rx="16" ry="10" fill="#6D4C41"/>
+  <ellipse cx="168" cy="178" rx="13" ry="8" fill="#8D6E63"/>
+
+  <!-- Small rock clusters -->
+  <ellipse cx="45" cy="185" rx="5" ry="4" fill="#795548"/>
+  <ellipse cx="50" cy="187" rx="4" ry="3" fill="#8D6E63"/>
+  <ellipse cx="155" cy="188" rx="6" ry="4" fill="#795548"/>
+
+  <!-- Ground -->
+  <rect x="0" y="180" width="200" height="20" fill="#5D4037"/>
+  <rect x="0" y="178" width="200" height="5" fill="#795548"/>
+
+  <!-- Smoke/ash clouds above volcano -->
+  <ellipse cx="90" cy="35" rx="12" ry="8" fill="#BCAAA4" opacity="0.5"/>
+  <ellipse cx="105" cy="28" rx="14" ry="9" fill="#BCAAA4" opacity="0.4"/>
+  <ellipse cx="98" cy="20" rx="10" ry="7" fill="#BCAAA4" opacity="0.3"/>
+
+  <!-- Mineral crystal on ground -->
+  <polygon points="80,175 85,165 90,175" fill="#7CB342"/>
+  <polygon points="82,175 85,167 88,175" fill="#9CCC65"/>
+</svg>

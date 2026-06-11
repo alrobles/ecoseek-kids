@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <!-- Clip path so leaf stays within the magnifying glass lens -->
+    <clipPath id="lensClip">
+      <circle cx="30" cy="32" r="19"/>
+    </clipPath>
+  </defs>
+
+  <!-- Magnifying glass handle -->
+  <line x1="43" y1="45" x2="56" y2="58" stroke="#2C3E50" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- Magnifying glass lens rim -->
+  <circle cx="30" cy="32" r="20" stroke="#2C3E50" stroke-width="3.5" fill="none"/>
+
+  <!-- Lens inner tint -->
+  <circle cx="30" cy="32" r="18" fill="rgba(52,152,219,0.12)"/>
+
+  <!-- Leaf (clipped to lens interior) -->
+  <g clip-path="url(#lensClip)">
+    <!-- Main leaf shape -->
+    <path d="M 28,48
+             C 14,36 10,16 28,6
+             C 40,14 44,36 28,48 Z"
+          fill="#2ECC71"/>
+
+    <!-- Leaf central vein -->
+    <path d="M 28,46 L 28,12"
+          stroke="#27AE60" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+
+    <!-- Leaf lateral veins - left -->
+    <path d="M 28,20 L 18,18" stroke="#27AE60" stroke-width="1" stroke-linecap="round" fill="none" opacity="0.6"/>
+    <path d="M 28,28 L 16,28" stroke="#27AE60" stroke-width="1" stroke-linecap="round" fill="none" opacity="0.6"/>
+    <path d="M 28,36 L 18,38" stroke="#27AE60" stroke-width="1" stroke-linecap="round" fill="none" opacity="0.6"/>
+
+    <!-- Leaf lateral veins - right -->
+    <path d="M 28,20 L 38,18" stroke="#27AE60" stroke-width="1" stroke-linecap="round" fill="none" opacity="0.6"/>
+    <path d="M 28,28 L 40,28" stroke="#27AE60" stroke-width="1" stroke-linecap="round" fill="none" opacity="0.6"/>
+    <path d="M 28,36 L 38,38" stroke="#27AE60" stroke-width="1" stroke-linecap="round" fill="none" opacity="0.6"/>
+  </g>
+
+  <!-- Glass highlight arc -->
+  <path d="M 14,24 A 14,14 0 0 1 32,14"
+        stroke="white" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.55"/>
+
+  <!-- Small sparkle/star (kid-friendly detail) -->
+  <path d="M 50,8  Q 50,14 46,14  Q 50,14 50,20  Q 50,14 54,14  Q 50,14 50,8 Z"
+        fill="#F39C12"/>
+
+  <!-- Blue water droplet (ecology accent) -->
+  <path d="M 12,50 C 12,54 8,56 6,56 C 4,56 0,54 0,50 C 0,46 6,42 6,42 C 6,42 12,46 12,50 Z"
+        fill="#3498DB" transform="translate(8, 0)"/>
+</svg>

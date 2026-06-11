@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="bodyBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F8BBD0"/>
+      <stop offset="50%" stop-color="#F48FB1"/>
+      <stop offset="100%" stop-color="#F06292"/>
+    </linearGradient>
+    <radialGradient id="heartGrad" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#FF5252"/>
+      <stop offset="60%" stop-color="#E53935"/>
+      <stop offset="100%" stop-color="#B71C1C"/>
+    </radialGradient>
+    <radialGradient id="brainGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF80AB"/>
+      <stop offset="100%" stop-color="#C2185B"/>
+    </radialGradient>
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FCE4EC"/>
+      <stop offset="100%" stop-color="#F48FB1"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="200" height="200" fill="url(#bodyBg)"/>
+
+  <!-- Soft center glow -->
+  <circle cx="100" cy="100" r="90" fill="url(#bgGlow)" opacity="0.4"/>
+
+  <!-- Body outline - simplified child figure -->
+  <g fill="none" stroke="#AD1457" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.25">
+    <!-- Head -->
+    <circle cx="100" cy="45" r="12"/>
+    <!-- Neck -->
+    <line x1="100" y1="57" x2="100" y2="65"/>
+    <!-- Body/torso -->
+    <path d="M85 65 L85 110 L115 110 L115 65 Z"/>
+    <!-- Arms -->
+    <path d="M85 70 Q70 85 65 105"/>
+    <path d="M115 70 Q130 85 135 105"/>
+    <!-- Legs -->
+    <path d="M90 110 L85 155"/>
+    <path d="M110 110 L115 155"/>
+  </g>
+
+  <!-- Brain (inside head area) -->
+  <g transform="translate(100, 45)">
+    <path d="M-8,-2 Q-6,-8 0,-7 Q4,-8 8,-2 Q6,4 0,3 Q-6,4 -8,-2 Z" fill="url(#brainGrad)" opacity="0.9"/>
+    <!-- Brain folds -->
+    <path d="M-4,-4 Q-2,-5 0,-3 Q2,-5 4,-4" stroke="#AD1457" stroke-width="1" fill="none" opacity="0.5"/>
+    <path d="M-5,-1 Q-2,-1 0,1 Q2,-1 5,-1" stroke="#AD1457" stroke-width="0.8" fill="none" opacity="0.4"/>
+  </g>
+
+  <!-- Heart (center of chest) -->
+  <g transform="translate(100, 88)">
+    <!-- Heart shape -->
+    <path d="M0,8 C-10,-2 -18,-12 -12,-18 C-6,-24 0,-16 0,-16 C0,-16 6,-24 12,-18 C18,-12 10,-2 0,8 Z" fill="url(#heartGrad)"/>
+    <!-- Heart highlight -->
+    <path d="M-5,-12 C-8,-14 -10,-16 -8,-17 C-5,-18 -3,-14 0,-12" fill="#FF8A80" opacity="0.5"/>
+  </g>
+
+  <!-- Lungs suggestion (faint circles) -->
+  <circle cx="88" cy="82" r="7" fill="#F48FB1" opacity="0.4"/>
+  <circle cx="112" cy="82" r="7" fill="#F48FB1" opacity="0.4"/>
+
+  <!-- Stomach suggestion -->
+  <ellipse cx="100" cy="100" rx="6" ry="5" fill="#F48FB1" opacity="0.3"/>
+
+  <!-- Hands and feet dots -->
+  <circle cx="65" cy="105" r="4" fill="#EC407A" opacity="0.3"/>
+  <circle cx="135" cy="105" r="4" fill="#EC407A" opacity="0.3"/>
+  <circle cx="85" cy="155" r="5" fill="#EC407A" opacity="0.3"/>
+  <circle cx="115" cy="155" r="5" fill="#EC407A" opacity="0.3"/>
+
+  <!-- Floating decorative elements - DNA-like curves -->
+  <g opacity="0.2">
+    <path d="M40 30 Q50 40 45 55 Q40 70 50 80" stroke="#AD1457" stroke-width="2" fill="none"/>
+    <path d="M160 30 Q150 40 155 55 Q160 70 150 80" stroke="#AD1457" stroke-width="2" fill="none"/>
+  </g>
+
+  <!-- Small heart beats / pulse line decoration -->
+  <path d="M30 170 L45 170 L50 160 L55 180 L60 170 L75 170" stroke="#FF5252" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+
+  <!-- Cells floating decoration -->
+  <circle cx="45" cy="45" r="3" fill="#F06292" opacity="0.3"/>
+  <circle cx="155" cy="45" r="2.5" fill="#F06292" opacity="0.25"/>
+  <circle cx="40" cy="140" r="3" fill="#F06292" opacity="0.3"/>
+  <circle cx="160" cy="140" r="2.5" fill="#F06292" opacity="0.25"/>
+
+  <!-- Happy eyes on body figure -->
+  <circle cx="95" cy="43" r="1.5" fill="#AD1457" opacity="0.35"/>
+  <circle cx="105" cy="43" r="1.5" fill="#AD1457" opacity="0.35"/>
+  <path d="M97 47 Q100 50 103 47" stroke="#AD1457" stroke-width="1" fill="none" opacity="0.35" stroke-linecap="round"/>
+
+  <!-- Measurements/scale decoration lines -->
+  <g stroke="#AD1457" stroke-width="1" opacity="0.15">
+    <line x1="155" y1="20" x2="160" y2="20"/>
+    <line x1="155" y1="30" x2="162" y2="30"/>
+    <line x1="155" y1="40" x2="160" y2="40"/>
+    <line x1="155" y1="50" x2="162" y2="50"/>
+    <line x1="155" y1="20" x2="155" y2="50"/>
+  </g>
+</svg>

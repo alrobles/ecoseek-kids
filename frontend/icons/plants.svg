@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="plantSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#81C784"/>
+      <stop offset="100%" stop-color="#A5D6A7"/>
+    </linearGradient>
+    <radialGradient id="flowerCenter1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFEB3B"/>
+      <stop offset="100%" stop-color="#FF9800"/>
+    </radialGradient>
+    <radialGradient id="flowerCenter2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFF176"/>
+      <stop offset="100%" stop-color="#FF5722"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="200" height="200" fill="url(#plantSky)"/>
+
+  <!-- Dirt/ground -->
+  <rect x="0" y="155" width="200" height="45" fill="#5D4037" rx="5"/>
+  <rect x="0" y="150" width="200" height="12" fill="#795548" rx="3"/>
+
+  <!-- Sun in corner -->
+  <circle cx="30" cy="30" r="18" fill="#FFEB3B"/>
+  <g stroke="#FFEB3B" stroke-width="2.5" stroke-linecap="round" opacity="0.7">
+    <line x1="30" y1="7" x2="30" y2="2"/>
+    <line x1="30" y1="53" x2="30" y2="58"/>
+    <line x1="7" y1="30" x2="2" y2="30"/>
+    <line x1="53" y1="30" x2="58" y2="30"/>
+    <line x1="14" y1="14" x2="10" y2="10"/>
+    <line x1="46" y1="14" x2="50" y2="10"/>
+    <line x1="14" y1="46" x2="10" y2="50"/>
+    <line x1="46" y1="46" x2="50" y2="50"/>
+  </g>
+
+  <!-- Cloud -->
+  <ellipse cx="90" cy="22" rx="16" ry="7" fill="white" opacity="0.6"/>
+  <ellipse cx="100" cy="18" rx="12" ry="6" fill="white" opacity="0.6"/>
+  <ellipse cx="80" cy="25" rx="10" ry="5" fill="white" opacity="0.5"/>
+
+  <!-- Tall flower (left) -->
+  <path d="M50 150 Q48 120 50 90" stroke="#66BB6A" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Leaves on stem -->
+  <ellipse cx="43" cy="130" rx="7" ry="4" fill="#4CAF50" transform="rotate(-30 43 130)"/>
+  <ellipse cx="57" cy="115" rx="6" ry="3.5" fill="#81C784" transform="rotate(25 57 115)"/>
+  <!-- Flower head -->
+  <circle cx="38" cy="86" r="7" fill="#FF4081"/>
+  <circle cx="50" cy="80" r="7" fill="#FF4081"/>
+  <circle cx="62" cy="86" r="7" fill="#FF4081"/>
+  <circle cx="56" cy="96" r="7" fill="#FF4081"/>
+  <circle cx="44" cy="96" r="7" fill="#FF4081"/>
+  <circle cx="50" cy="90" r="5" fill="url(#flowerCenter1)"/>
+
+  <!-- Medium flower (mid-right) -->
+  <path d="M120 150 Q118 110 120 70" stroke="#66BB6A" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <ellipse cx="113" cy="125" rx="8" ry="4" fill="#43A047" transform="rotate(-35 113 125)"/>
+  <ellipse cx="127" cy="105" rx="7" ry="3.5" fill="#66BB6A" transform="rotate(20 127 105)"/>
+  <!-- Flower head - daisy style -->
+  <circle cx="108" cy="65" r="6" fill="white"/>
+  <circle cx="120" cy="58" r="6" fill="white"/>
+  <circle cx="132" cy="65" r="6" fill="white"/>
+  <circle cx="126" cy="75" r="6" fill="white"/>
+  <circle cx="114" cy="75" r="6" fill="white"/>
+  <circle cx="120" cy="68" r="5" fill="url(#flowerCenter2)"/>
+
+  <!-- Tulip (far right) -->
+  <path d="M170 150 Q168 125 170 100" stroke="#66BB6A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <ellipse cx="164" cy="135" rx="6" ry="3.5" fill="#388E3C" transform="rotate(-25 164 135)"/>
+  <!-- Tulip bloom -->
+  <path d="M162 100 Q162 85 170 80 Q178 85 178 100 Q175 102 170 100 Q165 102 162 100 Z" fill="#FF5722"/>
+  <path d="M165 100 L170 95 L175 100" fill="#FF7043"/>
+
+  <!-- Carrot in ground -->
+  <path d="M95 150 L98 130 Q100 120 100 130 L102 150 Z" fill="#FF6F00" transform="rotate(15 100 150)"/>
+  <!-- Carrot top leaves -->
+  <path d="M98 130 Q93 115 88 120" stroke="#4CAF50" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M100 130 Q100 112 98 110" stroke="#66BB6A" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M102 130 Q108 115 113 120" stroke="#4CAF50" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- Tomato -->
+  <circle cx="75" cy="153" r="9" fill="#F44336"/>
+  <circle cx="72" cy="150" r="3" fill="#EF5350" opacity="0.5"/>
+  <ellipse cx="75" cy="145" rx="4" ry="2" fill="#4CAF50"/>
+
+  <!-- Small bush -->
+  <circle cx="140" cy="145" r="12" fill="#388E3C"/>
+  <circle cx="148" cy="140" r="10" fill="#43A047"/>
+  <circle cx="132" cy="140" r="9" fill="#2E7D32"/>
+
+  <!-- Watering can -->
+  <rect x="155" y="140" width="14" height="12" rx="3" fill="#546E7A"/>
+  <rect x="152" y="145" width="4" height="6" rx="1" fill="#546E7A"/>
+  <path d="M155 135 Q160 130 165 135" stroke="#546E7A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <circle cx="169" cy="140" r="1.5" fill="#90A4AE"/>
+  <!-- Water drops -->
+  <ellipse cx="169" cy="150" rx="1.5" ry="3" fill="#64B5F6" opacity="0.8"/>
+  <ellipse cx="172" cy="152" rx="1.5" ry="2.5" fill="#64B5F6" opacity="0.6"/>
+
+  <!-- Small seedling -->
+  <path d="M25 150 Q25 138 25 132" stroke="#4CAF50" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <ellipse cx="21" cy="132" rx="4" ry="3" fill="#66BB6A"/>
+  <ellipse cx="29" cy="134" rx="3.5" ry="3" fill="#81C784"/>
+</svg>
