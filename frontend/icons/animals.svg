@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FF7043"/>
+      <stop offset="50%" stop-color="#FFB74D"/>
+      <stop offset="100%" stop-color="#FFE082"/>
+    </linearGradient>
+    <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFF9C4"/>
+      <stop offset="40%" stop-color="#FFD54F"/>
+      <stop offset="100%" stop-color="#FFB300"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="200" height="200" fill="url(#skyGrad)"/>
+
+  <!-- Sun -->
+  <circle cx="160" cy="40" r="25" fill="url(#sunGlow)"/>
+  <g stroke="#FFD54F" stroke-width="3" stroke-linecap="round" opacity="0.6">
+    <line x1="160" y1="10" x2="160" y2="3"/>
+    <line x1="160" y1="70" x2="160" y2="77"/>
+    <line x1="130" y1="40" x2="123" y2="40"/>
+    <line x1="190" y1="40" x2="197" y2="40"/>
+    <line x1="139" y1="19" x2="134" y2="14"/>
+    <line x1="181" y1="19" x2="186" y2="14"/>
+    <line x1="139" y1="61" x2="134" y2="66"/>
+    <line x1="181" y1="61" x2="186" y2="66"/>
+  </g>
+
+  <!-- Ground / savanna -->
+  <ellipse cx="100" cy="200" rx="140" ry="40" fill="#FFB300"/>
+  <rect x="0" y="165" width="200" height="35" fill="#FFA000"/>
+
+  <!-- Acacia tree silhouette -->
+  <rect x="28" y="110" width="6" height="55" rx="2" fill="#5D4037"/>
+  <!-- Branches -->
+  <path d="M31 115 Q45 105 60 110" stroke="#5D4037" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M31 118 Q18 108 5 112" stroke="#5D4037" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M31 112 Q40 100 50 103" stroke="#5D4037" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Acacia leaf clumps -->
+  <ellipse cx="58" cy="107" rx="18" ry="10" fill="#33691E"/>
+  <ellipse cx="48" cy="98" rx="14" ry="8" fill="#558B2F"/>
+  <ellipse cx="8" cy="109" rx="14" ry="8" fill="#33691E"/>
+  <ellipse cx="52" cy="105" rx="10" ry="6" fill="#689F38"/>
+
+  <!-- Giraffe -->
+  <rect x="140" y="65" width="8" height="70" rx="3" fill="#FFB300"/>
+  <rect x="132" y="65" width="40" height="10" rx="5" fill="#FFB300"/>
+  <!-- Giraffe head -->
+  <ellipse cx="152" cy="62" rx="10" ry="7" fill="#FFB300"/>
+  <!-- Giraffe spots -->
+  <circle cx="144" cy="100" r="3" fill="#E65100"/>
+  <circle cx="147" cy="120" r="2.5" fill="#E65100"/>
+  <circle cx="141" cy="110" r="3" fill="#E65100"/>
+  <circle cx="146" cy="85" r="2" fill="#E65100"/>
+  <!-- Giraffe ossicones -->
+  <line x1="148" y1="56" x2="146" y2="50" stroke="#FFB300" stroke-width="3" stroke-linecap="round"/>
+  <line x1="155" y1="56" x2="157" y2="50" stroke="#FFB300" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="146" cy="49" r="2" fill="#5D4037"/>
+  <circle cx="157" cy="49" r="2" fill="#5D4037"/>
+  <!-- Giraffe eye -->
+  <circle cx="155" cy="60" r="1.5" fill="#3E2723"/>
+  <!-- Giraffe ears -->
+  <ellipse cx="144" cy="56" rx="3" ry="2" fill="#FFB300" transform="rotate(-30 144 56)"/>
+
+  <!-- Lion face (large friendly) -->
+  <circle cx="95" cy="130" r="22" fill="#F4A460"/>
+  <!-- Lion mane -->
+  <circle cx="95" cy="130" r="22" fill="none" stroke="#E65100" stroke-width="7" stroke-dasharray="4"/>
+  <circle cx="95" cy="130" r="25" fill="none" stroke="#D84315" stroke-width="3" stroke-dasharray="5"/>
+  <!-- Lion ears -->
+  <circle cx="78" cy="112" r="5" fill="#D84315"/>
+  <circle cx="112" cy="112" r="5" fill="#D84315"/>
+  <!-- Lion face details -->
+  <ellipse cx="95" cy="134" rx="10" ry="7" fill="#FFCC80"/>
+  <!-- Eyes -->
+  <circle cx="88" cy="126" r="2.5" fill="#3E2723"/>
+  <circle cx="102" cy="126" r="2.5" fill="#3E2723"/>
+  <!-- Nose -->
+  <ellipse cx="95" cy="133" rx="3" ry="2.5" fill="#3E2723"/>
+  <!-- Smile -->
+  <path d="M90 137 Q95 143 100 137" stroke="#3E2723" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+  <!-- Small bird -->
+  <path d="M70 75 Q75 70 80 75" stroke="#5D4037" stroke-width="2" fill="none"/>
+  <ellipse cx="75" cy="76" rx="4" ry="2" fill="#5D4037"/>
+
+  <!-- Grass tufts -->
+  <g stroke="#795548" stroke-width="2" stroke-linecap="round" fill="none">
+    <path d="M50 163 Q52 155 55 163"/>
+    <path d="M52 163 Q55 153 58 163"/>
+    <path d="M120 162 Q122 154 125 162"/>
+    <path d="M122 162 Q125 152 128 162"/>
+    <path d="M180 163 Q182 155 185 163"/>
+  </g>
+</svg>
