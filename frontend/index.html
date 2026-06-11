@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#FFFFFF">
   <title>ecoSeek Kids — Scientific Agent for Ecology</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+  <link rel="icon" href="logo-icon.svg" type="image/svg+xml">
 </head>
 <body>
 
@@ -27,32 +29,31 @@
   <!-- Welcome Screen -->
   <div id="welcome-screen" class="screen active">
     <div class="welcome-container">
-      <div class="logo-big">🌿</div>
-      <h1>ecoSeek <span class="kids-tag">Kids</span></h1>
+      <img src="logo.svg" alt="ecoSeek Kids" class="logo-svg">
       <p class="subtitle" data-i18n="subtitle">Your scientific assistant to explore nature</p>
       <div class="welcome-cards">
         <button class="topic-card" data-topic="ecology">
-          <span class="topic-icon">🌍</span>
+          <img class="topic-icon" src="icons/ecology.svg" alt="">
           <span class="topic-label" data-i18n="topic_ecology">Ecology</span>
         </button>
         <button class="topic-card" data-topic="animals">
-          <span class="topic-icon">🦁</span>
+          <img class="topic-icon" src="icons/animals.svg" alt="">
           <span class="topic-label" data-i18n="topic_animals">Animals</span>
         </button>
         <button class="topic-card" data-topic="plants">
-          <span class="topic-icon">🌱</span>
+          <img class="topic-icon" src="icons/plants.svg" alt="">
           <span class="topic-label" data-i18n="topic_plants">Plants</span>
         </button>
         <button class="topic-card" data-topic="earth">
-          <span class="topic-icon">🌋</span>
+          <img class="topic-icon" src="icons/earth.svg" alt="">
           <span class="topic-label" data-i18n="topic_earth">Earth</span>
         </button>
         <button class="topic-card" data-topic="space">
-          <span class="topic-icon">🔭</span>
+          <img class="topic-icon" src="icons/space.svg" alt="">
           <span class="topic-label" data-i18n="topic_space">Space</span>
         </button>
         <button class="topic-card" data-topic="body">
-          <span class="topic-icon">🫀</span>
+          <img class="topic-icon" src="icons/body.svg" alt="">
           <span class="topic-label" data-i18n="topic_body">Human Body</span>
         </button>
       </div>
@@ -68,7 +69,7 @@
     <header class="chat-header">
       <button id="back-btn" class="icon-btn" title="Back">←</button>
       <div class="header-center">
-        <span class="header-logo">🌿</span>
+        <img src="logo-icon.svg" alt="" class="header-logo-img">
         <span class="header-title">ecoSeek Kids</span>
       </div>
       <button id="new-chat-btn" class="icon-btn" title="New question">＋</button>

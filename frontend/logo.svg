@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="400" height="120">
+  <defs>
+    <clipPath id="lensClipLarge">
+      <circle cx="30" cy="32" r="19"/>
+    </clipPath>
+  </defs>
+
+  <!-- ===== ICON (left side, scaled 1.6x from 64x64) ===== -->
+  <g transform="translate(10, 8) scale(1.6)">
+
+    <!-- Magnifying glass handle -->
+    <line x1="43" y1="45" x2="56" y2="58" stroke="#2C3E50" stroke-width="5" stroke-linecap="round"/>
+
+    <!-- Magnifying glass lens rim -->
+    <circle cx="30" cy="32" r="20" stroke="#2C3E50" stroke-width="3.5" fill="none"/>
+
+    <!-- Lens inner tint -->
+    <circle cx="30" cy="32" r="18" fill="#E8F4FD"/>
+
+    <!-- Leaf (clipped to lens interior) -->
+    <g clip-path="url(#lensClipLarge)">
+      <path d="M 28,48 C 14,36 10,16 28,6 C 40,14 44,36 28,48 Z" fill="#2ECC71"/>
+      <path d="M 28,46 L 28,12" stroke="#27AE60" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+      <path d="M 28,20 L 18,18" stroke="#27AE60" stroke-width="1" stroke-linecap="round" fill="none" opacity="0.6"/>
+      <path d="M 28,28 L 16,28" stroke="#27AE60" stroke-width="1" stroke-linecap="round" fill="none" opacity="0.6"/>
+      <path d="M 28,36 L 18,38" stroke="#27AE60" stroke-width="1" stroke-linecap="round" fill="none" opacity="0.6"/>
+      <path d="M 28,20 L 38,18" stroke="#27AE60" stroke-width="1" stroke-linecap="round" fill="none" opacity="0.6"/>
+      <path d="M 28,28 L 40,28" stroke="#27AE60" stroke-width="1" stroke-linecap="round" fill="none" opacity="0.6"/>
+      <path d="M 28,36 L 38,38" stroke="#27AE60" stroke-width="1" stroke-linecap="round" fill="none" opacity="0.6"/>
+    </g>
+
+    <!-- Glass highlight -->
+    <path d="M 14,24 A 14,14 0 0 1 32,14"
+          stroke="white" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.55"/>
+
+    <!-- Sparkle -->
+    <path d="M 50,8 Q 50,14 46,14 Q 50,14 50,20 Q 50,14 54,14 Q 50,14 50,8 Z" fill="#F39C12"/>
+
+    <!-- Blue water droplet (ecology accent) -->
+    <path d="M 12,50 C 12,54 8,56 6,56 C 4,56 0,54 0,50 C 0,46 6,42 6,42 C 6,42 12,46 12,50 Z"
+          fill="#3498DB" transform="translate(8, 0)"/>
+  </g>
+
+  <!-- ===== WORDMARK: "ecoSeek" in hand-drawn stroked paths ===== -->
+  <!-- All letters use stroke=#2C3E50, stroke-width=5, stroke-linecap=round, stroke-linejoin=round, fill=none -->
+  <!-- Baseline at y=0, letters extend upward -->
+
+  <g transform="translate(130, 85)" stroke="#2C3E50" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+
+    <!-- Letter 'e' -->
+    <g transform="translate(0, 0)">
+      <path d="M 16,-6 C 12,-14 4,-16 -2,-12 C -6,-8 -8,-2 -6,4 C -4,10 2,12 10,10 C 14,8 18,4 18,-2"/>
+      <path d="M -4,-4 L 14,-4"/>
+    </g>
+
+    <!-- Letter 'c' -->
+    <g transform="translate(24, 0)">
+      <path d="M 14,-4 C 10,-12 4,-14 -2,-12 C -8,-8 -8,0 -6,6 C -4,12 2,14 10,12 C 14,10 16,6 16,2"/>
+    </g>
+
+    <!-- Letter 'o' -->
+    <g transform="translate(44, 0)">
+      <path d="M 14,-6 C 14,-14 10,-16 4,-16 C -4,-16 -6,-10 -6,-4 C -6,2 -4,4 4,4 C 12,4 16,0 14,-6"/>
+    </g>
+
+    <!-- Letter 'S' (capital) -->
+    <g transform="translate(66, 0)">
+      <path d="M 18,-22 C 20,-28 14,-30 8,-28 C 0,-26 -2,-18 0,-12 C 2,-6 10,-6 14,-4 C 18,-2 20,0 18,4 C 14,8 6,6 4,2"/>
+    </g>
+
+    <!-- Letter 'e' (2nd) -->
+    <g transform="translate(90, 0)">
+      <path d="M 16,-6 C 12,-14 4,-16 -2,-12 C -6,-8 -8,-2 -6,4 C -4,10 2,12 10,10 C 14,8 18,4 18,-2"/>
+      <path d="M -4,-4 L 14,-4"/>
+    </g>
+
+    <!-- Letter 'e' (3rd) -->
+    <g transform="translate(114, 0)">
+      <path d="M 16,-6 C 12,-14 4,-16 -2,-12 C -6,-8 -8,-2 -6,4 C -4,10 2,12 10,10 C 14,8 18,4 18,-2"/>
+      <path d="M -4,-4 L 14,-4"/>
+    </g>
+
+    <!-- Letter 'k' -->
+    <g transform="translate(138, 0)">
+      <path d="M 0,-20 L 0,2"/>
+      <path d="M 0,-12 Q 8,-16 14,-22"/>
+      <path d="M 0,-4 Q 8,0 14,6"/>
+    </g>
+
+  </g>
+
+  <!-- ===== "Kids" badge ===== -->
+  <g transform="translate(295, 62)">
+    <!-- Badge background -->
+    <rect x="0" y="0" width="90" height="32" rx="16" ry="16" fill="#F39C12"/>
+
+    <!-- "Kids" letters: white, stroke-width=3, stroke-linecap=round, stroke-linejoin=round -->
+    <g stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none">
+
+      <!-- K -->
+      <path d="M 22,24 L 22,10"/>
+      <path d="M 22,17 L 30,9"/>
+      <path d="M 22,17 L 30,25"/>
+
+      <!-- i -->
+      <path d="M 36,24 L 36,14"/>
+      <circle cx="36" cy="9" r="2.5" fill="white" stroke="none"/>
+
+      <!-- d -->
+      <path d="M 44,24 L 44,8"/>
+      <path d="M 44,14 C 50,12 56,16 54,20 C 52,23 46,24 44,24"/>
+
+      <!-- s -->
+      <path d="M 68,22 C 68,19 64,17 62,18 C 59,19 59,22 61,23 C 64,24 70,23 70,21"/>
+    </g>
+  </g>
+</svg>
