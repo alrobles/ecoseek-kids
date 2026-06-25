@@ -512,23 +512,32 @@ body {
 
 /* Data Panel (GBIF/References) */
 .data-panel {
-  margin-top: 0.4rem;
-  background: #F0FFF4;
-  border: 1px solid #C6F6D5;
+  margin-top: 0.6rem;
+  background: linear-gradient(135deg, #F0FFF4 0%, #E6FFED 100%);
+  border: 1.5px solid #9AE6B4;
+  border-left: 4px solid #38A169;
   border-radius: var(--radius-sm);
-  padding: 0.6rem 0.8rem;
-  font-size: 0.8rem;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.82rem;
+  box-shadow: 0 1px 4px rgba(56, 161, 105, 0.1);
+  animation: dataSlideIn 0.4s ease-out;
+}
+
+@keyframes dataSlideIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .data-panel-header {
   font-weight: 700;
-  color: #276749;
-  margin-bottom: 0.2rem;
+  color: #22543D;
+  margin-bottom: 0.25rem;
+  font-size: 0.85rem;
 }
 
 .data-panel-body {
-  color: #4A5568;
-  line-height: 1.4;
+  color: #2D3748;
+  line-height: 1.5;
 }
 
 /* ===== SCROLLBAR ===== */
