@@ -26,6 +26,13 @@ MIMO_API_URL = os.environ.get(
 )
 MIMO_API_KEY = os.environ.get("MIMO_API_KEY", "")
 MIMO_MODEL = os.environ.get("MIMO_MODEL", "mimo-v2.5-pro")
+
+# Fallback LLM provider (DeepSeek) — used when primary (MiMo) is rate-limited
+FALLBACK_API_URL = os.environ.get(
+    "FALLBACK_API_URL", "https://api.deepseek.com/v1/chat/completions"
+)
+FALLBACK_API_KEY = os.environ.get("FALLBACK_API_KEY", "")
+FALLBACK_MODEL = os.environ.get("FALLBACK_MODEL", "deepseek-chat")
 PORT = int(os.environ.get("KIDS_PORT", "4100"))
 BIND_HOST = os.environ.get("KIDS_BIND_HOST", "127.0.0.1")
 ALLOWED_ORIGIN = os.environ.get("KIDS_CORS_ORIGIN", "https://kids.ecoseek.org")
@@ -39,6 +46,12 @@ if not MIMO_API_KEY:
     if _key_file.exists():
         MIMO_API_KEY = _key_file.read_text().strip()
 
+# Load fallback API key from file if not set
+if not FALLBACK_API_KEY:
+    _fb_key_file = Path.home() / "env" / "deepseek-token"
+    if _fb_key_file.exists():
+        FALLBACK_API_KEY = _fb_key_file.read_text().strip()
+
 # Simple in-memory rate limiter
 _rate_buckets: dict[str, list[float]] = defaultdict(list)
 
@@ -51,6 +64,52 @@ def _rate_limit_ok(ip: str) -> bool:
         return False
     _rate_buckets[ip].append(now)
     return True
+
+
+def _call_llm(payload, primary_url, primary_key,
+              fallback_url=None, fallback_key=None, fallback_model=None):
+    """Call LLM API with automatic fallback on rate limiting (429)."""
+    import urllib.error
+
+    providers = [(primary_url, primary_key, payload["model"])]
+    if fallback_url and fallback_key and fallback_model:
+        fb_payload = dict(payload, model=fallback_model)
+        providers.append((fallback_url, fallback_key, fb_payload["model"]))
+
+    last_error = None
+    for url, key, model in providers:
+        try:
+            # Use appropriate payload model
+            p = dict(payload, model=model)
+            req = Request(
+                url,
+                data=json.dumps(p).encode(),
+                headers={
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {key}"
+                },
+                method="POST"
+            )
+            with urlopen(req, timeout=30) as resp:
+                api_data = json.loads(resp.read())
+
+            reply = api_data["choices"][0]["message"]["content"]
+            return reply
+
+        except urllib.error.HTTPError as e:
+            last_error = e
+            if e.code == 429:
+                print(f"[WARN] Provider {url} rate limited (429), trying fallback...",
+                      file=sys.stderr)
+                continue
+            raise
+        except Exception as e:
+            last_error = e
+            print(f"[WARN] Provider {url} failed: {e}, trying fallback...",
+                  file=sys.stderr)
+            continue
+
+    raise RuntimeError(f"All LLM providers failed. Last error: {last_error}")
 
 
 SECURITY_HEADERS = {
@@ -491,20 +550,9 @@ class KidsHandler(SimpleHTTPRequestHandler):
                 "top_p": 0.9
             }
 
-            req = Request(
-                MIMO_API_URL,
-                data=json.dumps(api_payload).encode(),
-                headers={
-                    "Content-Type": "application/json",
-                    "Authorization": f"Bearer {MIMO_API_KEY}"
-                },
-                method="POST"
-            )
-
-            with urlopen(req, timeout=30) as resp:
-                api_data = json.loads(resp.read())
-
-            reply = api_data["choices"][0]["message"]["content"]
+            # Try primary (MiMo), fallback to DeepSeek on rate limit
+            reply = _call_llm(api_payload, MIMO_API_URL, MIMO_API_KEY,
+                              FALLBACK_API_URL, FALLBACK_API_KEY, FALLBACK_MODEL)
 
             # Post-response safety check: if LLM generated inappropriate content
             if _response_contains_inappropriate(reply):
@@ -596,16 +644,19 @@ class KidsHandler(SimpleHTTPRequestHandler):
 
 
 def main():
-    if not MIMO_API_KEY:
-        print("ERROR: MIMO_API_KEY not set", file=sys.stderr)
+    if not MIMO_API_KEY and not FALLBACK_API_KEY:
+        print("ERROR: No LLM API key configured (neither MIMO_API_KEY nor FALLBACK_API_KEY)", file=sys.stderr)
         sys.exit(1)
 
     server = HTTPServer((BIND_HOST, PORT), KidsHandler)
     print(f"ecoSeek Kids v2.0 — Scientific Agent Environment for Ecology")
     print(f"  http://{BIND_HOST}:{PORT}")
-    print(f"  Model: {MIMO_MODEL}")
+    provider = "MiMo" if MIMO_API_KEY else "DeepSeek (fallback)"
+    print(f"  Model: {MIMO_MODEL if MIMO_API_KEY else FALLBACK_MODEL} via {provider}")
     print(f"  GBIF: {GBIF_API}")
     print(f"  CrossRef: {CROSSREF_API}")
+    if MIMO_API_KEY and FALLBACK_API_KEY:
+        print(f"  Fallback: DeepSeek ({FALLBACK_MODEL})")
     sys.stdout.flush()
 
     try:
