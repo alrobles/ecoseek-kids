@@ -413,6 +413,9 @@ class KidsHandler(SimpleHTTPRequestHandler):
     def end_headers(self):
         for name, value in SECURITY_HEADERS.items():
             self.send_header(name, value)
+        # Prevent Cloudflare caching for JS/CSS (i18n updates)
+        if self.path.endswith(('.js', '.css')):
+            self.send_header('Cache-Control', 'no-cache')
         super().end_headers()
 
     def do_GET(self):
@@ -488,7 +491,9 @@ class KidsHandler(SimpleHTTPRequestHandler):
                 "zh": "Chinese (中文)",
                 "hi": "Hindi (हिन्दी)",
                 "ar": "Arabic (العربية)",
-                "pt": "Portuguese (Português)"
+                "pt": "Portuguese (Português)",
+                "de": "German (Deutsch)",
+                "fr": "French (Français)"
             }
             lang_name = lang_map.get(language, "English")
 

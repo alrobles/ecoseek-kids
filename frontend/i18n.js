@@ -137,7 +137,53 @@ const I18N = {
       earth: "Olá! 🌋 Sou seu guia da **Terra**. Vulcões, terremotos, clima.\n\nQual fenômeno quer explorar?",
       space: "Olá! 🔭 Sou seu guia do **Espaço**. Planetas, estrelas, o universo.\n\nO que quer descobrir?",
       body: "Olá! 🫀 Sou seu guia do **Corpo Humano**.\n\nQual parte do corpo te interessa?"
+    }  },
+  de: {
+    subtitle: "Dein wissenschaftlicher Assistent zur Erforschung der Natur",
+    topic_ecology: "Ökologie",
+    topic_animals: "Tiere",
+    topic_plants: "Pflanzen",
+    topic_earth: "Erde",
+    topic_space: "Weltraum",
+    topic_body: "Menschlicher Körper",
+    ask_placeholder: "Frag mich über die Natur...",
+    chat_placeholder: "Stelle deine wissenschaftliche Frage...",
+    send: "Senden ➜",
+    input_hint: "ecoSeek Kids hilft dir, die Wissenschaft zu entdecken. Überprüfe immer, was du lernst!",
+    data_included: "🔬 Basierend auf echter Wissenschaft",
+    data_desc: "Diese Antwort nutzt Live-Biodiversitätsdaten von GBIF (260M+ Einträge) und wissenschaftliche Referenzen von CrossRef.",
+    greetings: {
+      ecology: "Hallo Entdecker! 🌍 Ich bin dein **Ökologie**-Guide. Ich kann echte Artendaten von GBIF suchen, wissenschaftliche Referenzen finden und dir bei deinem Bericht helfen.\n\nWelches Thema interessiert dich?",
+      animals: "Hallo! 🦁 Ich bin dein **Tierreich**-Guide. Wenn du ein Tier erwähnst, suche ich automatisch seine GBIF-Daten — Verbreitung, Aufzeichnungen, Klassifikation.\n\nWelches Tier möchtest du erforschen?",
+      plants: "Hallo! 🌱 Ich bin dein **Pflanzenwelt**-Guide. Ich kann Pflanzendaten von GBIF und botanische Referenzen suchen.\n\nWelche Pflanze interessiert dich?",
+      earth: "Hallo! 🌋 Ich bin dein **Erde**-Guide. Vulkane, Erdbeben, Klima — mit echten wissenschaftlichen Daten.\n\nWelches Phänomen möchtest du erforschen?",
+      space: "Hallo! 🔭 Ich bin dein **Weltraum**-Guide. Planeten, Sterne, das Universum.\n\nWas möchtest du entdecken?",
+      body: "Hallo! 🫀 Ich bin dein **Körper**-Guide. Mit Biologie- und Medizinreferenzen.\n\nWelcher Teil des Körpers interessiert dich?"
     }
+  },
+  fr: {
+    subtitle: "Ton assistant scientifique pour explorer la nature",
+    topic_ecology: "Écologie",
+    topic_animals: "Animaux",
+    topic_plants: "Plantes",
+    topic_earth: "Terre",
+    topic_space: "Espace",
+    topic_body: "Corps Humain",
+    ask_placeholder: "Pose-moi une question sur la nature...",
+    chat_placeholder: "Pose ta question scientifique...",
+    send: "Envoyer ➜",
+    input_hint: "ecoSeek Kids t'aide à explorer la science. Vérifie toujours ce que tu apprends !",
+    data_included: "🔬 Propulsé par la vraie science",
+    data_desc: "Cette réponse utilise des données de biodiversité en direct de GBIF (260M+ enregistrements) et des références scientifiques de CrossRef.",
+    greetings: {
+      ecology: "Salut explorateur ! 🌍 Je suis ton guide en **Écologie**. Je peux rechercher des données d'espèces réelles sur GBIF, trouver des références scientifiques et t'aider avec ton rapport.\n\nQuel sujet t'intéresse ?",
+      animals: "Salut ! 🦁 Je suis ton guide du règne **Animal**. Si tu mentionnes un animal, je chercherai automatiquement ses données GBIF — distribution, enregistrements, classification.\n\nQuel animal veux-tu étudier ?",
+      plants: "Salut ! 🌱 Je suis ton guide du monde **Végétal**. Je peux rechercher des données de plantes sur GBIF et des références botaniques.\n\nQuelle plante t'intéresse ?",
+      earth: "Salut ! 🌋 Je suis ton guide de la **Terre**. Volcans, tremblements de terre, climat — avec de vraies données scientifiques.\n\nQuel phénomène veux-tu explorer ?",
+      space: "Salut ! 🔭 Je suis ton guide de l'**Espace**. Planètes, étoiles, l'univers.\n\nQue veux-tu découvrir ?",
+      body: "Salut ! 🫀 Je suis ton guide du **Corps Humain**. Avec des références en biologie et médecine.\n\nQuelle partie du corps t'intéresse ?"
+    }
+
   }
 };
 
