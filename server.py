@@ -27,7 +27,19 @@ MIMO_API_URL = os.environ.get(
 MIMO_API_KEY = os.environ.get("MIMO_API_KEY", "")
 MIMO_MODEL = os.environ.get("MIMO_MODEL", "mimo-v2.5-pro")
 
-# Fallback LLM provider (DeepSeek) — used when primary (MiMo) is rate-limited
+# Primary LLM provider (OpenRouter — cheap, deepseek-v4-flash-0731) to cut costs.
+# The kid-facing backend only needs short, simple science answers — no need for
+# an expensive premium model. OpenRouter's deepseek-v4-flash-0731 is ~4x cheaper
+# than MiMo v2.5 Pro while ranking #1 in academia.
+OPENROUTER_API_URL = os.environ.get(
+    "OPENROUTER_API_URL", "https://openrouter.ai/api/v1/chat/completions"
+)
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
+OPENROUTER_MODEL = os.environ.get(
+    "OPENROUTER_MODEL", "deepseek/deepseek-v4-flash-0731"
+)
+
+# Fallback LLM provider (DeepSeek) — used when primary is rate-limited/down
 FALLBACK_API_URL = os.environ.get(
     "FALLBACK_API_URL", "https://api.deepseek.com/v1/chat/completions"
 )
@@ -40,11 +52,17 @@ MAX_BODY_SIZE = 65536  # 64 KB
 RATE_LIMIT_WINDOW = 60  # seconds
 RATE_LIMIT_MAX = 15     # requests per window per IP
 
-# Load API key from file if not set
+# Load MiMo API key from file if not set
 if not MIMO_API_KEY:
     _key_file = Path.home() / "env" / "mimo-key"
     if _key_file.exists():
         MIMO_API_KEY = _key_file.read_text().strip()
+
+# Load OpenRouter API key from file if not set
+if not OPENROUTER_API_KEY:
+    _or_key_file = Path.home() / "env" / "openrouter-key"
+    if _or_key_file.exists():
+        OPENROUTER_API_KEY = _or_key_file.read_text().strip()
 
 # Load fallback API key from file if not set
 if not FALLBACK_API_KEY:
@@ -66,15 +84,15 @@ def _rate_limit_ok(ip: str) -> bool:
     return True
 
 
-def _call_llm(payload, primary_url, primary_key,
-              fallback_url=None, fallback_key=None, fallback_model=None):
-    """Call LLM API with automatic fallback on rate limiting (429)."""
-    import urllib.error
+def _call_llm(payload, providers):
+    """Call LLM API through an ordered chain of providers (primary first).
 
-    providers = [(primary_url, primary_key, payload["model"])]
-    if fallback_url and fallback_key and fallback_model:
-        fb_payload = dict(payload, model=fallback_model)
-        providers.append((fallback_url, fallback_key, fb_payload["model"]))
+    providers: list of (url, key, model). Each provider is tried in order;
+    on 401/429/network error the next one is attempted. The chain is built so
+    the cheap OpenRouter model is tried first, with MiMo and DeepSeek as
+    availability fallbacks.
+    """
+    import urllib.error
 
     last_error = None
     for url, key, model in providers:
@@ -98,8 +116,8 @@ def _call_llm(payload, primary_url, primary_key,
 
         except urllib.error.HTTPError as e:
             last_error = e
-            if e.code == 429:
-                print(f"[WARN] Provider {url} rate limited (429), trying fallback...",
+            if e.code in (401, 429):
+                print(f"[WARN] Provider {url.split('/')[2] if len(url.split('/'))>2 else url} failed ({e.code}), trying fallback...",
                       file=sys.stderr)
                 continue
             raise
@@ -548,16 +566,27 @@ class KidsHandler(SimpleHTTPRequestHandler):
             messages.append({"role": "user", "content": message})
 
             api_payload = {
-                "model": MIMO_MODEL,
+                "model": OPENROUTER_MODEL,
                 "messages": messages,
                 "temperature": 0.6,
                 "max_tokens": 800,
                 "top_p": 0.9
             }
 
-            # Try primary (MiMo), fallback to DeepSeek on rate limit
-            reply = _call_llm(api_payload, MIMO_API_URL, MIMO_API_KEY,
-                              FALLBACK_API_URL, FALLBACK_API_KEY, FALLBACK_MODEL)
+            # Cost-optimized provider chain — ALL OpenRouter (no provider caps):
+            # 1. deepseek-v4-flash-0731  — Pareto frontier, #1 academia, 44% off ($0.0786/$0.1572)
+            # 2. upstage/solar-pro4      — cheapest agentic fallback ($0.03/$0.12, 90% off)
+            # 3. poolside/laguna-s-2.1   — last-resort coding-capable fallback ($0.09/$0.18)
+            providers = []
+            if OPENROUTER_API_KEY:
+                providers.append((OPENROUTER_API_URL, OPENROUTER_API_KEY, OPENROUTER_MODEL))
+                providers.append((OPENROUTER_API_URL, OPENROUTER_API_KEY, "upstage/solar-pro4"))
+                providers.append((OPENROUTER_API_URL, OPENROUTER_API_KEY, "poolside/laguna-s-2.1"))
+            if MIMO_API_KEY:
+                providers.append((MIMO_API_URL, MIMO_API_KEY, MIMO_MODEL))
+            if FALLBACK_API_KEY:
+                providers.append((FALLBACK_API_URL, FALLBACK_API_KEY, FALLBACK_MODEL))
+            reply = _call_llm(api_payload, providers)
 
             # Post-response safety check: if LLM generated inappropriate content
             if _response_contains_inappropriate(reply):
@@ -649,19 +678,25 @@ class KidsHandler(SimpleHTTPRequestHandler):
 
 
 def main():
-    if not MIMO_API_KEY and not FALLBACK_API_KEY:
-        print("ERROR: No LLM API key configured (neither MIMO_API_KEY nor FALLBACK_API_KEY)", file=sys.stderr)
+    if not (MIMO_API_KEY or OPENROUTER_API_KEY or FALLBACK_API_KEY):
+        print("ERROR: No LLM API key configured (need OPENROUTER_API_KEY, MIMO_API_KEY or FALLBACK_API_KEY)", file=sys.stderr)
         sys.exit(1)
 
     server = HTTPServer((BIND_HOST, PORT), KidsHandler)
-    print(f"ecoSeek Kids v2.0 — Scientific Agent Environment for Ecology")
+    print(f"ecoSeek Kids v2.1 — Scientific Agent Environment for Ecology")
     print(f"  http://{BIND_HOST}:{PORT}")
-    provider = "MiMo" if MIMO_API_KEY else "DeepSeek (fallback)"
-    print(f"  Model: {MIMO_MODEL if MIMO_API_KEY else FALLBACK_MODEL} via {provider}")
+    chain = []
+    if OPENROUTER_API_KEY:
+        chain.append(f"OpenRouter({OPENROUTER_MODEL})")
+        chain.append("OpenRouter(upstage/solar-pro4)")
+        chain.append("OpenRouter(poolside/laguna-s-2.1)")
+    if MIMO_API_KEY:
+        chain.append(f"MiMo({MIMO_MODEL})")
+    if FALLBACK_API_KEY:
+        chain.append(f"DeepSeek({FALLBACK_MODEL})")
+    print(f"  LLM chain: {' → '.join(chain)}")
     print(f"  GBIF: {GBIF_API}")
     print(f"  CrossRef: {CROSSREF_API}")
-    if MIMO_API_KEY and FALLBACK_API_KEY:
-        print(f"  Fallback: DeepSeek ({FALLBACK_MODEL})")
     sys.stdout.flush()
 
     try:
