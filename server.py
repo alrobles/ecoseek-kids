@@ -111,7 +111,9 @@ def _call_llm(payload, providers):
             with urlopen(req, timeout=30) as resp:
                 api_data = json.loads(resp.read())
 
-            reply = api_data["choices"][0]["message"]["content"]
+            reply = api_data["choices"][0]["message"].get("content")
+            if not reply:
+                raise ValueError(f"{model} returned empty content")
             return reply
 
         except urllib.error.HTTPError as e:
