@@ -175,6 +175,40 @@ BLOCKED_TOPICS = [
     "alcohol", "cerveza", "beer", "vodka", "whisky", "cigarro", "cigarette",
     "fumar", "smoking", "vape", "apuesta", "gambling", "apostar",
     "desnudo", "naked", "nude",
+    # Portuguese
+    "cocaína", "heroína", "maconha", "metanfetamina", "pornografia",
+    "pênis", "orgasmo", "coito", "nudez", "pistola", "revólver",
+    "assassinar", "suicídio", "terrorismo", "tortura", "álcool",
+    "apostas", "desnud",
+    # German
+    "droge", "kokain", "heroin", "haschisch", "methamphetamin",
+    "pornografie", "pornos", "orgasmus", "nackt", "nacktheit",
+    "sexuell", "waffe", "pistole", "gewehr", "bombe", "explosivstoff",
+    "töten", "umbringen", "mord", "suizid", "selbstmord",
+    "terrorismus", "folter", "alkohol", "bier", "zigarette",
+    "rauchen", "glücksspiel",
+    # French
+    "drogue", "cocaïne", "héroïne", "méthamphétamine", "pornographie",
+    "pornos", "orgasme", "nudité", "déshabillé", "arme", "pistolet",
+    "fusil", "explosif", "tuer", "meurtre", "assassiner", "suicide",
+    "terrorisme", "torture", "alcool", "bière", "cigarette",
+    "fumer", "jeu d'argent", "parier",
+    # Arabic (substring-matched — clitics like ال/و attach to words)
+    "مخدرات", "كوكايين", "هيروين", "حشيش", "قنب", "فنتانيل", "مورفين",
+    "إباحية", "سلاح", "مسدس", "بندقية", "قنبلة", "متفجرات", "قتل",
+    "انتحار", "إرهاب", "تعذيب", "كحول", "بيرة", "فودكا", "ويسكي",
+    "سيجارة", "تدخين", "قمار", "عريان",
+    # Hindi
+    "ड्रग्स", "नशीला", "कोकीन", "हेरोइन", "भांग", "गांजा", "फेंटानिल",
+    "मॉर्फिन", "अश्लील", "शिश्न", "हथियार", "बंदूक", "पिस्तौल",
+    "बम", "विस्फोटक", "हत्या", "आत्महत्या", "आतंकवाद", "यातना",
+    "शराब", "बीयर", "वोदका", "व्हिस्की", "सिगरेट", "धूम्रपान", "जुआ",
+    # Chinese (substring-matched — no word boundaries in CJK)
+    "毒品", "可卡因", "海洛因", "大麻", "冰毒", "芬太尼", "吗啡",
+    "摇头丸", "色情", "性爱", "性器官", "阴茎", "阴道", "自慰", "裸体",
+    "武器", "枪支", "手枪", "步枪", "炸弹", "爆炸物", "杀人犯", "谋杀",
+    "杀人案", "行凶", "自杀", "恐怖主义", "酷刑", "酒精", "啤酒",
+    "伏特加", "威士忌", "香烟", "吸烟", "赌博",
 ]
 
 # Patterns that need context — might be OK in nature context
@@ -183,6 +217,22 @@ SENSITIVE_PATTERNS = [
     "muerte", "death", "morir", "die", "muerto",
     "veneno", "poison", "venom", "toxico", "toxic",
     "sangre", "blood", "depredador", "predator",
+    # Portuguese
+    "reprodução", "morte", "morrer", "veneno", "venenoso", "tóxico",
+    "sangue", "predador", "morto",
+    # German
+    "fortpflanzung", "paarung", "sterben", "tot", "tod", "gift",
+    "toxisch", "blut", "räuber",
+    # French
+    "reproduction", "accouplement", "mourir", "mort", "venin", "poison",
+    "toxique", "sang", "prédateur", "saigner",
+    # Arabic (substring-matched — clitics like ال/و attach to words)
+    "تكاثر", "تزاوج", "موت", "يموت", "مات", "مسموم", "سمية", "سموم",
+    "دماء", "نزيف", "مفترس",
+    # Hindi
+    "प्रजनन", "संगम", "मृत्यु", "मरना", "जहर", "विषैला", "खून", "शिकारी",
+    # Chinese
+    "繁殖", "交配", "死亡", "中毒", "有毒", "毒液", "鲜血", "掠食",
 ]
 
 REDIRECT_RESPONSES = {
@@ -216,6 +266,16 @@ REDIRECT_RESPONSES = {
         "Eu sou seu amigo da **natureza** e da **ciência**. "
         "Quer explorar algo incrível do mundo natural?"
     ),
+    "de": (
+        "Das ist eine Frage für deine Eltern oder Lehrer! 🤗 "
+        "Ich bin dein **Natur**- und **Wissenschafts**-Freund. "
+        "Möchtest du etwas Tolles über die Natur entdecken?"
+    ),
+    "fr": (
+        "C'est une question pour tes parents ou tes profs ! 🤗 "
+        "Je suis ton copain **nature** et **sciences**. "
+        "Tu veux découvrir quelque chose d'incroyable sur le monde naturel ?"
+    ),
 }
 
 REDIRECT_FOLLOWUPS = {
@@ -225,15 +285,36 @@ REDIRECT_FOLLOWUPS = {
     "hi": ["डॉल्फिन कैसे रहती हैं?", "सूरज क्यों चमकता है?", "तितलियाँ क्या खाती हैं?"],
     "ar": ["كيف تعيش الدلافين؟", "لماذا تشرق الشمس؟", "ماذا يأكل الفراش؟"],
     "pt": ["Como vivem os golfinhos?", "Por que o sol brilha?", "O que as borboletas comem?"],
+    "de": ["Wie leben Delfine?", "Warum leuchtet die Sonne?", "Was fressen Schmetterlinge?"],
+    "fr": ["Comment vivent les dauphins ?", "Pourquoi le soleil brille ?", "Que mangent les papillons ?"],
 }
 
 
+def _needs_substring_match(ch: str) -> bool:
+    """Scripts where \\b word boundaries don't work: CJK ideographs/kana/
+    hangul (no spaces) and Arabic (clitics like ال/و attach to words)."""
+    o = ord(ch)
+    return (0x3400 <= o <= 0x9FFF or 0x3040 <= o <= 0x30FF      # CJK, kana
+            or 0xAC00 <= o <= 0xD7AF                            # hangul
+            or 0x0600 <= o <= 0x06FF or 0x0750 <= o <= 0x077F    # Arabic
+            or 0x08A0 <= o <= 0x08FF                            # Arabic ext
+            or 0xFB50 <= o <= 0xFDFF or 0xFE70 <= o <= 0xFEFF)   # Arabic pres. forms
+
+
+def _contains_term(text: str, term: str) -> bool:
+    """Match a term in text. Boundary-less scripts (CJK, Arabic) use
+    substring match; other scripts use \\b prefix match
+    (e.g. 'gun' matches 'guns' but not 'segun')."""
+    if any(_needs_substring_match(c) for c in term):
+        return term in text
+    return re.search(r"\b" + re.escape(term), text) is not None
+
+
 def _is_blocked_topic(text: str) -> bool:
-    """Check if the message contains blocked topics for children.
-    Uses word-boundary matching to avoid false positives like 'segun' matching 'gun'."""
+    """Check if the message contains blocked topics for children."""
     lower = text.lower()
     for term in BLOCKED_TOPICS:
-        if re.search(r'\b' + re.escape(term), lower):
+        if _contains_term(lower, term):
             return True
     return False
 
@@ -242,7 +323,7 @@ def _is_sensitive_topic(text: str) -> bool:
     """Check if the message touches sensitive topics needing careful handling."""
     lower = text.lower()
     for term in SENSITIVE_PATTERNS:
-        if re.search(r'\b' + re.escape(term), lower):
+        if _contains_term(lower, term):
             return True
     return False
 
@@ -256,6 +337,18 @@ def _response_contains_inappropriate(text: str) -> bool:
         "fentanyl", "fentanilo", "cocaine", "cocaina",
         "heroina", "heroin", "methamphetamine",
         "how to make", "como fabricar", "como hacer droga",
+        # Portuguese
+        "relação sexual", "ato sexual", "como fazer droga",
+        # German
+        "sexuelle handlung", "wie man drogen",
+        # French
+        "acte sexuel", "comment fabriquer",
+        # Arabic
+        "علاقة جنسية", "كيف تصنع المخدرات",
+        # Hindi
+        "यौन संबंध", "ड्रग्स कैसे",
+        # Chinese
+        "性行为", "如何制造毒品",
     ]
     for flag in red_flags:
         if flag in lower:
