@@ -14,6 +14,7 @@ import os
 import re
 import sys
 import time
+import unicodedata
 from collections import defaultdict
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
@@ -69,6 +70,10 @@ if not FALLBACK_API_KEY:
     if _fb_key_file.exists():
         FALLBACK_API_KEY = _fb_key_file.read_text().strip()
 
+# Client-supplied 'system' is never trusted — it is a prompt-injection
+# vector. Only these known topic labels may be appended to the system prompt.
+_SAFE_TOPIC_SYSTEMS = {"", "ecology", "animals", "plants", "earth", "space", "body"}
+
 # Simple in-memory rate limiter
 _rate_buckets: dict[str, list[float]] = defaultdict(list)
 
@@ -81,6 +86,21 @@ def _rate_limit_ok(ip: str) -> bool:
         return False
     _rate_buckets[ip].append(now)
     return True
+
+
+def _clamped_int(value, default, lo, hi):
+    try:
+        n = int(value)
+    except (TypeError, ValueError):
+        n = default
+    return max(lo, min(hi, n))
+
+
+def _short_str(value, max_len=500) -> str:
+    """Coerce a body field to a bounded string (query/topic inputs)."""
+    if not isinstance(value, str):
+        return ""
+    return value[:max_len]
 
 
 def _call_llm(payload, providers):
@@ -209,12 +229,34 @@ BLOCKED_TOPICS = [
     "武器", "枪支", "手枪", "步枪", "炸弹", "爆炸物", "杀人犯", "谋杀",
     "杀人案", "行凶", "自杀", "恐怖主义", "酷刑", "酒精", "啤酒",
     "伏特加", "威士忌", "香烟", "吸烟", "赌博",
+    "自尽", "寻死", "轻生", "开房", "约炮", "嫖娼", "卖淫",
+    "贩毒", "吸毒", "枪械", "猎枪", "枪炮", "开枪", "枪毙",
+    # English slang / unambiguous terms (weed/coke/meth/acid skipped —
+    # collide with plants, soda and chemistry on a science site)
+    "porn", "shrooms", "dope", "hentai",
+    # Spanish
+    "mariguana", "follar",
+    # Portuguese
+    "baseado", "cerveja", "uisque", "putaria", "foder",
+    # German ("Stroh" skipped — it's also the word for straw/hay)
+    "ficken", "wichsen", "kiffen", "hasch",
+    # French ("acide" skipped — it's the normal word for acid)
+    "sexe", "sexuel", "teuchi", "beuh", "shit", "clope",
+    "salope", "encule", "niquer", "couille",
+    # Hindi
+    "नशा", "अफ़ीम", "चरस", "मादक", "रंडी", "गांड", "चूस",
+    # Arabic
+    "سكس", "خمر", "نبيذ", "غانجا", "شيشة", "أركيلة", "نيك",
+    "قحبة", "زنا", "عاهرة", "مخدر",
+    # Romanized Hindi / Arabizi / Chinese pinyin (distinctive spellings)
+    "hathyar", "nasha", "afim", "sharab", "khamr", "hshish",
+    "charas", "dupian", "seqing", "zisha", "xidu",
 ]
 
 # Patterns that need context — might be OK in nature context
 SENSITIVE_PATTERNS = [
     "reproduccion", "reproduction", "apareamiento", "mating",
-    "muerte", "death", "morir", "die", "muerto",
+    "muerte", "death", "morir", "dead", "dying", "died", "muerto",
     "veneno", "poison", "venom", "toxico", "toxic",
     "sangre", "blood", "depredador", "predator",
     # Portuguese
@@ -301,9 +343,66 @@ def _needs_substring_match(ch: str) -> bool:
             or 0xFB50 <= o <= 0xFDFF or 0xFE70 <= o <= 0xFEFF)   # Arabic pres. forms
 
 
+# === Evasion-resistant normalization ===
+# Catches: accent variants (éxtasis→extasis, Attempted pornô→porno),
+# leetspeak (s3x→sex, p0rn→porn), homoglyphs (Cyrillic/Greek lookalikes),
+# zero-width chars (s​e​x→sex) and full-width forms.
+
+_LEET_TABLE = str.maketrans({
+    "0": "o", "1": "i", "3": "e", "4": "a", "5": "s",
+    "7": "t", "8": "b", "@": "a", "$": "s", "!": "i",
+})
+
+_HOMOGLYPHS = str.maketrans({
+    "а": "a", "е": "e", "о": "o", "р": "p", "с": "c", "у": "y",
+    "х": "x", "і": "i", "ј": "j", "ѕ": "s", "һ": "h", "ԁ": "d",
+    "α": "a", "ε": "e", "ο": "o", "ρ": "p", "τ": "t", "χ": "x",
+})
+
+_ZERO_WIDTH_RE = re.compile("[\\u200b\\u200c\\u200d\\u2060\\ufeff]")
+
+
+def _normalize(text: str) -> str:
+    """Normalize text for safety matching: NFKD compatibility, strip
+    diacritics, drop zero-width/format chars, homoglyphs → Latin,
+    leetspeak → letters, lowercase."""
+    text = unicodedata.normalize("NFKD", text)
+    text = "".join(c for c in text if not unicodedata.combining(c))
+    text = _ZERO_WIDTH_RE.sub("", text).lower()
+    return text.translate(_HOMOGLYPHS).translate(_LEET_TABLE)
+
+
+BLOCKED_TERMS_N = [_normalize(t) for t in BLOCKED_TOPICS]
+SENSITIVE_TERMS_N = [_normalize(t) for t in SENSITIVE_PATTERNS]
+
+# Letter-spacing evasion: "s e x", "s-e-x", "s.e.x.o" → joined and checked
+# for EXACT membership (never substring) so "Essex"/"farmacia" stay safe.
+_SPACED_RUN_RE = re.compile(r"(?:[a-z0-9][\s.\-_*]+){2,}[a-z0-9]")
+
+
+def _joined_terms(terms):
+    return {
+        re.sub(r"[^a-z0-9]", "", t)
+        for t in terms
+        if len(re.sub(r"[^a-z0-9]", "", t)) >= 3
+    }
+
+
+_BLOCKED_JOINED = _joined_terms(BLOCKED_TERMS_N)
+_SENSITIVE_JOINED = _joined_terms(SENSITIVE_TERMS_N)
+
+
+def _has_spaced_term(norm_text: str, joined_set) -> bool:
+    """'s e x' style evasion: join letter runs, require exact term match."""
+    for run in _SPACED_RUN_RE.findall(norm_text):
+        if re.sub(r"[^a-z0-9]", "", run) in joined_set:
+            return True
+    return False
+
+
 def _contains_term(text: str, term: str) -> bool:
-    """Match a term in text. Boundary-less scripts (CJK, Arabic) use
-    substring match; other scripts use \\b prefix match
+    """Match a normalized term in normalized text. Boundary-less scripts
+    (CJK, Arabic) use substring match; other scripts use \\b prefix match
     (e.g. 'gun' matches 'guns' but not 'segun')."""
     if any(_needs_substring_match(c) for c in term):
         return term in text
@@ -311,47 +410,53 @@ def _contains_term(text: str, term: str) -> bool:
 
 
 def _is_blocked_topic(text: str) -> bool:
-    """Check if the message contains blocked topics for children."""
-    lower = text.lower()
-    for term in BLOCKED_TOPICS:
-        if _contains_term(lower, term):
+    """Check if the message contains blocked topics for children,
+    resistant to accent/leet/homoglyph/spacing evasion."""
+    norm = _normalize(text)
+    for term in BLOCKED_TERMS_N:
+        if _contains_term(norm, term):
             return True
-    return False
+    return _has_spaced_term(norm, _BLOCKED_JOINED)
 
 
 def _is_sensitive_topic(text: str) -> bool:
     """Check if the message touches sensitive topics needing careful handling."""
-    lower = text.lower()
-    for term in SENSITIVE_PATTERNS:
-        if _contains_term(lower, term):
+    norm = _normalize(text)
+    for term in SENSITIVE_TERMS_N:
+        if _contains_term(norm, term):
             return True
-    return False
+    return _has_spaced_term(norm, _SENSITIVE_JOINED)
 
 
 def _response_contains_inappropriate(text: str) -> bool:
-    """Post-response check: did the LLM generate inappropriate content?"""
-    lower = text.lower()
+    """Post-response check: did the LLM generate inappropriate content?
+    Word-boundary matched (congenital ≠ genital) and normalized so accent
+    or homoglyph variants can't slip through."""
+    norm = _normalize(text)
     red_flags = [
         "acto sexual", "relacion sexual", "relaciones sexuales",
         "sexual intercourse", "orgasm", "genital",
         "fentanyl", "fentanilo", "cocaine", "cocaina",
         "heroina", "heroin", "methamphetamine",
-        "how to make", "como fabricar", "como hacer droga",
+        "how to make drugs", "how to make a bomb", "how to make explosives",
+        "como hacer drogas", "como fabricar drogas", "como hacer una bomba",
+        "comment fabriquer de la drogue", "comment faire une bombe",
+        "wie man drogen herstellt", "wie man eine bombe",
         # Portuguese
         "relação sexual", "ato sexual", "como fazer droga",
         # German
         "sexuelle handlung", "wie man drogen",
         # French
-        "acte sexuel", "comment fabriquer",
+        "acte sexuel",
         # Arabic
         "علاقة جنسية", "كيف تصنع المخدرات",
         # Hindi
         "यौन संबंध", "ड्रग्स कैसे",
         # Chinese
-        "性行为", "如何制造毒品",
+        "性行为", "如何制造毒品", "如何制造炸弹",
     ]
     for flag in red_flags:
-        if flag in lower:
+        if _contains_term(norm, _normalize(flag)):
             return True
     return False
 
@@ -537,6 +642,10 @@ class KidsHandler(SimpleHTTPRequestHandler):
         if path == "/api/health":
             self._json_response({"status": "ok", "service": "ecoseek-kids"})
         elif path == "/api/species":
+            client_ip = self.headers.get("CF-Connecting-IP") or self.client_address[0]
+            if not _rate_limit_ok(client_ip):
+                self._json_response({"error": "Rate limit exceeded. Please wait a moment."}, 429)
+                return
             qs = parse_qs(parsed.query)
             query = qs.get("q", [""])[0]
             self._json_response(gbif_species_search(query))
@@ -547,7 +656,7 @@ class KidsHandler(SimpleHTTPRequestHandler):
         path = urlparse(self.path).path.rstrip("/")
 
         client_ip = self.headers.get("CF-Connecting-IP") or self.client_address[0]
-        if path == "/api/chat" and not _rate_limit_ok(client_ip):
+        if path.startswith("/api/") and not _rate_limit_ok(client_ip):
             self._json_response({"error": "Rate limit exceeded. Please wait a moment."}, 429)
             return
 
@@ -558,21 +667,34 @@ class KidsHandler(SimpleHTTPRequestHandler):
         if path == "/api/chat":
             self._handle_chat(body)
         elif path == "/api/species":
-            self._json_response(gbif_species_search(body.get("query", ""), body.get("limit", 5)))
+            self._json_response(gbif_species_search(
+                _short_str(body.get("query")), _clamped_int(body.get("limit"), 5, 1, 50)))
         elif path == "/api/occurrences":
-            self._json_response(gbif_occurrences(body.get("species", ""), body.get("limit", 300)))
+            self._json_response(gbif_occurrences(
+                _short_str(body.get("species")), _clamped_int(body.get("limit"), 300, 1, 1000)))
         elif path == "/api/references":
-            self._json_response(crossref_search(body.get("query", ""), body.get("limit", 5)))
+            self._json_response(crossref_search(
+                _short_str(body.get("query")), _clamped_int(body.get("limit"), 5, 1, 50)))
         elif path == "/api/report":
-            self._json_response(generate_report_outline(body.get("topic", ""), body.get("species")))
+            self._json_response(generate_report_outline(
+                _short_str(body.get("topic")), _short_str(body.get("species"))))
         else:
             self._json_response({"error": "Not found"}, 404)
 
     def _handle_chat(self, body):
         try:
-            message = body.get("message", "").strip()
+            message = body.get("message", "")
+            if not isinstance(message, str):
+                message = ""
+            message = message.strip()
+            # Client 'system' is untrusted (prompt-injection vector) —
+            # only allowlisted topic labels reach the system prompt.
             topic_system = body.get("system", "")
+            if topic_system not in _SAFE_TOPIC_SYSTEMS:
+                topic_system = ""
             history = body.get("history", [])
+            if not isinstance(history, list):
+                history = []
             query_type = body.get("query_type", "chat")  # chat | species | references | report
 
             language = body.get("language", "en")  # en, es, zh, hi, ar, pt
@@ -649,12 +771,18 @@ class KidsHandler(SimpleHTTPRequestHandler):
 
             messages = [{"role": "system", "content": system_prompt}]
             for msg in history[-8:]:
+                if not isinstance(msg, dict):
+                    continue
                 role = msg.get("role", "user")
                 if role not in ("user", "assistant"):
                     continue
-                content = msg.get("content", "")[:1000]
-                # Skip history messages with blocked content
-                if role == "user" and _is_blocked_topic(content):
+                content = msg.get("content", "")
+                if not isinstance(content, str):
+                    continue
+                content = content[:1000]
+                # Drop any history turn with blocked content — a forged
+                # "assistant" turn could otherwise prime unsafe answers.
+                if _is_blocked_topic(content):
                     continue
                 messages.append({"role": role, "content": content})
             messages.append({"role": "user", "content": message})
