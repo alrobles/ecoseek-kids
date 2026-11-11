@@ -27,16 +27,15 @@ MIMO_API_URL = os.environ.get(
 MIMO_API_KEY = os.environ.get("MIMO_API_KEY", "")
 MIMO_MODEL = os.environ.get("MIMO_MODEL", "mimo-v2.5-pro")
 
-# Primary LLM provider (OpenRouter — cheap, deepseek-v4-flash-0731) to cut costs.
+# Primary LLM provider (OpenRouter — cheap Gemini Flash) to cut costs.
 # The kid-facing backend only needs short, simple science answers — no need for
-# an expensive premium model. OpenRouter's deepseek-v4-flash-0731 is ~4x cheaper
-# than MiMo v2.5 Pro while ranking #1 in academia.
+# an expensive premium model. gemini-3.8-flash is ~$0.83/$4.13 per M tokens.
 OPENROUTER_API_URL = os.environ.get(
     "OPENROUTER_API_URL", "https://openrouter.ai/api/v1/chat/completions"
 )
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 OPENROUTER_MODEL = os.environ.get(
-    "OPENROUTER_MODEL", "deepseek/deepseek-v4-flash-0731"
+    "OPENROUTER_MODEL", "google/gemini-3.8-flash"
 )
 
 # Fallback LLM provider (DeepSeek) — used when primary is rate-limited/down
@@ -88,9 +87,9 @@ def _call_llm(payload, providers):
     """Call LLM API through an ordered chain of providers (primary first).
 
     providers: list of (url, key, model). Each provider is tried in order;
-    on 401/429/network error the next one is attempted. The chain is built so
-    the cheap OpenRouter model is tried first, with MiMo and DeepSeek as
-    availability fallbacks.
+    on 401/403/404/429/network error the next one is attempted (404 covers
+    retired OpenRouter models). The chain is built so the cheap OpenRouter
+    model is tried first, with MiMo and DeepSeek as availability fallbacks.
     """
     import urllib.error
 
@@ -118,7 +117,7 @@ def _call_llm(payload, providers):
 
         except urllib.error.HTTPError as e:
             last_error = e
-            if e.code in (401, 429):
+            if e.code in (401, 403, 404, 429):
                 print(f"[WARN] Provider {url.split('/')[2] if len(url.split('/'))>2 else url} failed ({e.code}), trying fallback...",
                       file=sys.stderr)
                 continue
@@ -576,14 +575,14 @@ class KidsHandler(SimpleHTTPRequestHandler):
             }
 
             # Cost-optimized provider chain — ALL OpenRouter (no provider caps):
-            # 1. deepseek-v4-flash-0731  — Pareto frontier, #1 academia, 44% off ($0.0786/$0.1572)
-            # 2. upstage/solar-pro4      — cheapest agentic fallback ($0.03/$0.12, 90% off)
-            # 3. poolside/laguna-s-2.1   — last-resort coding-capable fallback ($0.09/$0.18)
+            # 1. OPENROUTER_MODEL (default google/gemini-3.8-flash)
+            # 2. upstage/solar-pro4      — cheapest agentic fallback ($0.03/$0.12)
+            # 3. google/gemini-3.7-flash — last-resort cheap fallback
             providers = []
             if OPENROUTER_API_KEY:
                 providers.append((OPENROUTER_API_URL, OPENROUTER_API_KEY, OPENROUTER_MODEL))
                 providers.append((OPENROUTER_API_URL, OPENROUTER_API_KEY, "upstage/solar-pro4"))
-                providers.append((OPENROUTER_API_URL, OPENROUTER_API_KEY, "poolside/laguna-s-2.1"))
+                providers.append((OPENROUTER_API_URL, OPENROUTER_API_KEY, "google/gemini-3.7-flash"))
             if MIMO_API_KEY:
                 providers.append((MIMO_API_URL, MIMO_API_KEY, MIMO_MODEL))
             if FALLBACK_API_KEY:
@@ -691,7 +690,7 @@ def main():
     if OPENROUTER_API_KEY:
         chain.append(f"OpenRouter({OPENROUTER_MODEL})")
         chain.append("OpenRouter(upstage/solar-pro4)")
-        chain.append("OpenRouter(poolside/laguna-s-2.1)")
+        chain.append("OpenRouter(google/gemini-3.7-flash)")
     if MIMO_API_KEY:
         chain.append(f"MiMo({MIMO_MODEL})")
     if FALLBACK_API_KEY:
